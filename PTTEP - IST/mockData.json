@@ -1,0 +1,18 @@
+[
+	{
+		"sys_id": "5f7a30ecdb4d9d58f19edc2dd396194c",
+		"name": "Nestle Coffee Alegria",
+		"credit": 138,
+		"active": "true",
+		"price": "฿2,057.94",
+		"order": -300
+	},
+	{
+		"sys_id": "fd9a3cfbdb818590964f971dd396198e",
+		"name": "Nestle Coffee Alegria",
+		"credit": 0,
+		"active": "false",
+		"price": "฿2,057.95",
+		"order": -100
+	}
+]
