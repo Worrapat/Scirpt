@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+</head>
+<body>
+  
+   	<div class="row">
+        <div class="column" style="float: left; padding-left: 15px; padding-right: 20px; padding-bottom: 20px; margin-top: -10px;" dir="ltr">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myPoModal" ng-click="c.copyArray()">Order Now</button>
+        </div>
+      	<div class="column" style="float: right; padding-right: 15px; padding-bottom: 20px; margin-top: -10px;" dir="rtl" >
+            <button type="button" id="istationary_stock_in_item_list_cart" class="btn btn-primary" data-toggle="modal" data-target="#myPreviewPoModal" ng-click="c.fetchObjectValue()">Preview Order</button>
+        </div>
+    </div>
+    
+    <div id="myPoModal" class="modal fade" data-backdrop="static" data-keyboard="false" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="modal-title">iStationary Stock-In</h3>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-hover table-striped table-responsive table-bordered table-wrapper-scroll-y my-custom-scrollbar">
+                        <thead>
+                            <tr>
+                                <th style="width:15%;text-align:center;" class="tablecolumn">Item</th>
+                                <th style="width:30%;text-align:center;" class="tablecolumn">Description</th>
+                                <th style="width:10%;text-align:center;" class="tablecolumn">Unit Type</th>
+                                <th style="width:10%;text-align:center;" class="tablecolumn">Unit Price</th>
+                              	<th style="width:10%;text-align:center;" class="tablecolumn">Remaining Qty</th>
+                                <th style="width:10%;text-align:center;" class="tablecolumn">Quantity</th>
+                                <th style="width:15%;text-align:center;" class="tablecolumn">Total Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                          <!---<tr dir-paginate="item in filteredItems = c.copyArr | itemsPerPage:15" current-page="c.currentPage" pagination-id="active">--->
+                            <tr ng-repeat="item in c.copyArr" current-page="c.currentPage" pagination-id="active">
+								<td style="text-align:center;">
+									<a href="{{::item.photo1}}" target="_blank">
+										<img ng-src="{{::item.photo1}}?t=large" ng-if="item.photo1" alt="{{::item.name}}" class="m-r-sm m-b-sm item-image pull-center"  ng-click="showLargeImage(item.photo1x)"/>
+   									</a>
+                                  	<a>
+                                        <img ng-src="No%20Image.png?t=large" ng-if="item.photo1 === 'null.iix'" alt="{{::item.name}}" class="m-r-sm m-b-sm item-image pull-center"  ng-click="showLargeImage(item.photo1x)"/>
+                                    </a>
+								</td>  
+								<td>{{item.description}}</td>
+								<td style="text-align:center;">{{item.unit_type}}</td>
+								<td style="text-align:center;">{{item.unit_price}}</td>
+                              	<td style="text-align:center;"><label ng-bind=item.remaining_qty></label></td>
+								<td style="text-align:center;"><input style="text-align:center;" class="rounded-corner-input example1 column1" ng-model=item.qty type="number" ng-change="updatePrice(item)" min="0" max="{{item.po_remaining_qty}}"></td>
+								<td style="text-align:center;">฿<label ng-bind=item.totalPrice></label></td>
+							</tr>
+                        </tbody>
+                    </table>
+				</div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" ng-click="c.generateArray()">${Add}</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+    <div id="myPreviewPoModal" class="modal fade" data-backdrop="static" data-keyboard="false" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="modal-title">iStationary Stock-In (Order Summary)</h3>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-hover table-striped table-responsive table-bordered table-wrapper-scroll-y my-custom-scrollbar">
+                        <thead>
+                            <tr>
+                                <th style="width:15%;text-align:center;" class="tablecolumn">Item</th>
+                                <th style="width:30%;text-align:center;" class="tablecolumn">Description</th>
+                                <th style="width:10%;text-align:center;" class="tablecolumn">Unit Type</th>
+                                <th style="width:10%;text-align:center;" class="tablecolumn">Unit Price</th>
+                              	<th style="width:10%;text-align:center;" class="tablecolumn">Remaining Qty</th>
+                                <th style="width:10%;text-align:center;" class="tablecolumn">Quantity</th>
+                                <th style="width:15%;text-align:center;" class="tablecolumn">Total Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                          	<tr ng-if="c.previewOBJ.length <= 0" current-page="c.currentPage" pagination-id="active">
+                              <td colspan="6" style="text-align:center;">Empty Item</td>
+                          	</tr>
+                            <tr ng-repeat="item in c.previewOBJ" *ngIf="c.previewOBJ.length > 0" current-page="c.currentPage" pagination-id="active">
+								<td style="text-align:center;">
+									<a href="{{::item.photo1}}" target="_blank">
+										<img ng-src="{{::item.photo1}}?t=large" ng-if="item.photo1" alt="{{::item.name}}" class="m-r-sm m-b-sm item-image pull-center"  ng-click="showLargeImage(item.photo1x)"/>
+   									</a>
+                                  	<a>
+                                        <img ng-src="No%20Image.png?t=large" ng-if="item.photo1 === 'null.iix'" alt="{{::item.name}}" class="m-r-sm m-b-sm item-image pull-center"  ng-click="showLargeImage(item.photo1x)"/>
+                                    </a>
+								</td>  
+								<td style="text-align:left;">{{item.description}}</td>
+								<td style="text-align:center;">{{item.unit_type}}</td>
+								<td style="text-align:center;">{{item.unit_price}}</td>
+                              	<td style="text-align:center;"><label ng-bind=item.remaining_qty></label></td>
+								<td style="text-align:center;"><input style="text-align:center;" class="rounded-corner-input example1 column1" ng-model=item.qty type="number" ng-change="updatePrice(item)" min="0" max="{{item.po_remaining_qty}}"></td>
+								<td style="text-align:center;">฿<label ng-bind=item.totalPrice></label></td>
+							</tr>
+                        </tbody>
+                    </table>
+                    <p style = "text-align: right; padding-right: 18px;">Grand Price: ฿{{c.total_display}}</p>
+                </div>
+                <div class="modal-footer">
+                  	<button class="btn btn-primary" ng-click="c.updateCart()">${Update}</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</html>

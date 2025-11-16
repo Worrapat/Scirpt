@@ -1,0 +1,4 @@
+https://ptteptest.service-now.com/$sp.do?id=sp-preview&sys_id=64b171b0dbaa7150d63d06a5f3961948
+https://ptteptest.service-now.com/sp_config?id=istationery_stock_in_po_order_now
+https://ptteptest.service-now.com/sp?id=istationery_stock_in_po_order_now
+https://ptteptest.service-now.com/esc?id=istationery_stock_in_po_order_now
