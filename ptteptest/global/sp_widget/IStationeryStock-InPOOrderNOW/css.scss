@@ -1,98 +1,112 @@
 .modal-dialog {
-    width: 70%;
-    margin: auto auto;
-} 
+  width: 70%;
+  margin: auto auto;
+}
+
 .my-custom-scrollbar {
   position: relative;
   overflow-x: scroll;
   overflow-y: hidden;
 
 }
-.table-wrapper-scroll-y {
-display: block;
-}
-.table-paginator{
-    position: relative;
-    height: 75px;
-     //float: right;
-    color: #646262;
-}
-.align-right{
-    position: absolute;
-    top:0;
-    right:2rem;
-}
-.rpp{
-    display: inline-block;
-    margin-right: 4rem;
-}
-.rpp h4{
-    font-size: 14px;
-    display: inline-block;
-    margin-right: 2rem;
-}
-.page-control{
-    display: inline-block;
-}
-.page-control .current-page{
-    display: inline-block;
-    margin-right: 2rem;
-}
-.page-prev{
-    margin-right: 2rem;
-}
-.page-next{
-    margin-left: 2rem;
-}
-th{
-background-color: #F5F5F5;
-}
-.form-input-control {
-  height:35px;
-  border-radius: 5px;
-  border:1px solid;
-}
-.form-fixed-control{
-  height:35px;
-  width:60px;
-  border-radius: 5px;
-  border:1px solid;
-}
-.form-photo-control{
-  height:35px;
-  width:80px;
-  border-radius: 5px;
-  border:1px solid;
+
+// .table-wrapper-scroll-y {
+//   display: block;
+// }
+
+.table-paginator {
+  position: relative;
+  height: 75px;
+  //float: right;
+  color: #646262;
 }
 
-.form-extra-control{
-  height:35px;
-  width:90px;
+.align-right {
+  position: absolute;
+  top: 0;
+  right: 2rem;
+}
+
+.rpp {
+  display: inline-block;
+  margin-right: 4rem;
+}
+
+.rpp h4 {
+  font-size: 14px;
+  display: inline-block;
+  margin-right: 2rem;
+}
+
+.page-control {
+  display: inline-block;
+}
+
+.page-control .current-page {
+  display: inline-block;
+  margin-right: 2rem;
+}
+
+.page-prev {
+  margin-right: 2rem;
+}
+
+.page-next {
+  margin-left: 2rem;
+}
+
+th {
+  background-color: #F5F5F5;
+}
+
+.form-input-control {
+  height: 35px;
   border-radius: 5px;
-  border:1px solid;
+  border: 1px solid;
+}
+
+.form-fixed-control {
+  height: 35px;
+  width: 60px;
+  border-radius: 5px;
+  border: 1px solid;
+}
+
+.form-photo-control {
+  height: 35px;
+  width: 80px;
+  border-radius: 5px;
+  border: 1px solid;
+}
+
+.form-extra-control {
+  height: 35px;
+  width: 90px;
+  border-radius: 5px;
+  border: 1px solid;
 }
 
 .po {
   width: 20px;
   height: 20px;
-  background-color:#B2F5EE;
+  background-color: #B2F5EE;
 }
 
-.pr{
+.pr {
   width: 20px;
   height: 20px;
-  background-color:#DAF7A6;
+  background-color: #DAF7A6;
 }
 
-.column{
+.column {
   width: 40%;
 }
 
-.column1{
-	width: 75%;
+.column1 {
+  width: 75%;
 }
 
-.column2{
+.column2 {
   margin-left: auto;
 }
 
@@ -105,7 +119,7 @@ background-color: #F5F5F5;
   margin: 0;
 }
 
-.row > * {
+.row>* {
   padding: 15px;
   flex: 1;
 }
@@ -117,5 +131,5 @@ background-color: #F5F5F5;
 }
 
 .tablecolumn {
-	background-color: #cce6ff;
+  background-color: #cce6ff;
 }

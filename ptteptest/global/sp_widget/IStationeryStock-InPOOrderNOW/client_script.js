@@ -19,7 +19,6 @@ api.controller = function ($scope, $rootScope) {
 	c.filterResult = '';
 	c.oldResult = null;
 
-
 	function parseNumber(value) {
 		return parseFloat((value || 0).toString().replace(/,/g, '')) || 0;
 	}
@@ -27,22 +26,20 @@ api.controller = function ($scope, $rootScope) {
 	function formatCurrency(value) {
 		return parseNumber(value).toLocaleString('en-US', {
 			minimumFractionDigits: 2,
-			maximumFractionDigits: 2
+			maximumFractionDigits: 2,
 		});
 	}
 
-
-
 	// ===== Update UC Code Table =====
 	c.updateUCCode = function (items) {
-		// console.log('items :', items);
+		console.log('items :', items);
 
 		// --- 1. Validate input ---
 		if (!Array.isArray(items) || items.length === 0) {
 			// แสดงข้อความ default ถ้าไม่มีข้อมูลใน items
 			$scope.page.g_form.setValue(
 				'u_ticket_summary',
-				'<div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 14px; font-family: Segoe UI, Arial, sans-serif; font-size: 14px; color: #374151; line-height: 1.5; box-shadow: 0 1px 4px rgba(0,0,0,0.05);">This field is used to store the <strong style="color: #2563eb;">UC Code</strong>, which indicates the system’s behavior under different conditions. Use the table below as a quick reference.</div>'
+				'<div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 14px; font-family: Segoe UI, Arial, sans-serif; font-size: 14px; color: #374151; line-height: 1.5; box-shadow: 0 1px 4px rgba(0,0,0,0.05);">This field is used to store the <strong style="color: #2563eb;">UC Code</strong>, which indicates the system’s behavior under different conditions. Use the table below as a quick reference.</div>',
 			);
 			return;
 		}
@@ -54,8 +51,9 @@ api.controller = function ($scope, $rootScope) {
 			'<tr style="background-color: #297bd8; color:#ffffff;">' +
 			'<th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:35%;">Description</th>' +
 			'<th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:15%;">Use Case</th>' +
-			'<th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:25%;">User Edit Price</th>' +
+			// '<th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:25%;">User Edit Price</th>' +
 			'<th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:25%;">Stock-In Unit Cost (Excl. VAT)</th>' +
+			'<th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:25%;">Stock-In Unit </th>' +
 			'</tr>' +
 			'</thead><tbody>';
 
@@ -63,8 +61,9 @@ api.controller = function ($scope, $rootScope) {
 		items.forEach((item) => {
 			const description = item.description;
 			const ucCode = item.uc_code;
-			const userEditPrice = item.u_unit_price;
-			const stockInUnitCost = item.oldPrice;
+			const stockInUnitCost = item.u_unit_price;
+			const u_unit_type = item.u_unit_type;
+			// const stockInUnitCost = item.oldPrice;
 
 			tableHTML +=
 				`<tr>` +
@@ -75,11 +74,14 @@ api.controller = function ($scope, $rootScope) {
 				ucCode +
 				`</td>` +
 				`<td style="border: 1px solid #ddd; padding: 8px; text-align:center; width:25%;">` +
-				userEditPrice +
-				`</td>` +
-				`<td style="border: 1px solid #ddd; padding: 8px; text-align:center; width:25%;">` +
 				stockInUnitCost +
 				`</td>` +
+				`<td style="border: 1px solid #ddd; padding: 8px; text-align:center; width:25%;">` +
+				u_unit_type +
+				`</td>` +
+				// `<td style="border: 1px solid #ddd; padding: 8px; text-align:center; width:25%;">` +
+				// stockInUnitCost +
+				// `</td>` +
 				`</tr>`;
 		});
 
@@ -95,6 +97,7 @@ api.controller = function ($scope, $rootScope) {
 		// c.filterResult.category = $scope.page.g_form.getValue('u_category');
 		// c.filterResult.sub_category = $scope.page.g_form.getValue('u_sub_category');
 		var ref = $scope.page.g_form.getValue('reference_to_stock_in_request');
+		console.log('ref : ' + ref);
 		c.filterResult = $scope.page.g_form.getValue('u_so_po_no_');
 		//alert(c.filterResult.category);
 		// if (c.oldResult == null) {
@@ -112,7 +115,7 @@ api.controller = function ($scope, $rootScope) {
 		//alert(c.filterResult.category);
 		var reference = '';
 		var checkmvrs = $scope.page.g_form.getValue('istationary_stock_in_item_list_cart');
-        const u_budget_holder = $scope.page.g_form.getValue('u_budget_holder');
+		const u_budget_holder = $scope.page.g_form.getValue('u_budget_holder');
 
 		if (checkmvrs != '' && ref == '') {
 			checkmvrs = JSON.parse(checkmvrs);
@@ -212,6 +215,7 @@ api.controller = function ($scope, $rootScope) {
 								? copyItem.description
 								: item.description || item.u_description_sin,
 							u_unit_price: item.u_unit_price,
+							u_unit_type: item.u_unit_type,
 							oldPrice: '-',
 							uc_code: '-',
 						};
@@ -234,6 +238,7 @@ api.controller = function ($scope, $rootScope) {
 					u_description_sin: item.u_description_sin,
 					description: copyItem ? copyItem.description : item.description || item.u_description_sin,
 					u_unit_price: item.u_unit_price,
+					u_unit_type: item.u_unit_type,
 					oldPrice: '-',
 					uc_code: '-',
 				};
@@ -281,6 +286,7 @@ api.controller = function ($scope, $rootScope) {
 	c.fetchObjectValue = function () {
 		var mrv = $scope.page.g_form.getValue('istationary_stock_in_item_list_cart');
 		var po = $scope.page.g_form.getValue('u_so_po_no_');
+		const u_budget_holder = $scope.page.g_form.getValue('u_budget_holder');
 		var ref = $scope.page.g_form.getValue('reference_to_stock_in_request');
 		if (mrv != '') {
 			mrv = JSON.parse(mrv);
@@ -291,6 +297,7 @@ api.controller = function ($scope, $rootScope) {
 				mrv: mrv,
 				po: po,
 				ref: ref,
+				budget_holder: u_budget_holder,
 			})
 			.then(function (item) {
 				if (item.data) {
@@ -339,7 +346,7 @@ api.controller = function ($scope, $rootScope) {
 			.open({
 				template: html,
 			})
-			.then(function () { });
+			.then(function () {});
 	};
 
 	// Update Price //
@@ -365,7 +372,7 @@ api.controller = function ($scope, $rootScope) {
 			c.total_display = c.total_display.replaceAll(',', '');
 			c.total_display = parseFloat(c.total_display);
 			c.total_display = c.total_display - item.totalPrice;
-			// console.log('base : ' + c.total_display);	
+			// console.log('base : ' + c.total_display);
 		}
 		var summary = '';
 		var orderSummary = '';
@@ -433,13 +440,15 @@ api.controller = function ($scope, $rootScope) {
 				c.newDataArr = oldArr;
 
 				const itemsForUC = c.newArr.map((item) => {
-					console.log("item : " + JSON.stringify(item));
-					const copyItem = (c.copyArr || []).find((ci) => ci.item_id === item.u_description_sin) || {};
+					console.log('item : ' + JSON.stringify(item));
+					const copyItem =
+						(c.copyArr || []).find((ci) => ci.item_id === item.u_description_sin) || {};
 					return {
 						u_description_sin: item.item_id,
 						description: copyItem.description || item.description || item.u_description_sin,
 						u_unit_price: item.u_unit_price || '-',
 						oldPrice: copyItem.oldPrice || '-',
+						u_unit_type: item.u_unit_type,
 						uc_code: copyItem.uc_code || '-',
 					};
 				});
@@ -448,5 +457,4 @@ api.controller = function ($scope, $rootScope) {
 				c.updatMRV(c.newDataArr);
 			});
 	};
-
 };

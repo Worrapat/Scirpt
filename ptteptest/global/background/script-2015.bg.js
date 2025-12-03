@@ -1,5 +1,5 @@
-var itemUC2 = '7d47b42097c17290f86b34b71153af0b'; // TASK0072100
-var itemUC4 = '4952363c97013690f86b34b71153af73'; // TASK0072218
+var itemUC2 = '7d47b42097c17290f86b34b71153af0b'; // TASK0072495
+var itemUC4 = '551d184a9725b210f86b34b71153afd9'; // TASK0072490
 
 var grUISILI = new GlideRecord('u_ist_stock_in_line_item');
 if (grUISILI.get(itemUC4)) {
@@ -56,13 +56,26 @@ function updateItemByUCCode(lineitem) {
 				}
 
 				stockIn.active = false;
-				stockIn.update();
+
+				gs.info(
+					[
+						'--------------------------------------------',
+						'UC-002 | Old Item (Deactivating)',
+						'Name           : ' + stockIn.name,
+						'Sys ID         : ' + stockIn.sys_id,
+						'Order          : ' + stockIn.order,
+						'Active         : ' + stockIn.active,
+						'--------------------------------------------',
+					].join('\n'),
+				);
+
+				// stockIn.update();
 
 				if (currentOrder > maxOrder) {
 					maxOrder = currentOrder;
 				}
 
-				if (!stockIn.u_parent_item) {
+				if (stockIn.u_parent_item == '') {
 					oldRecords.push({
 						u_parent_item: stockIn.sys_id,
 						name: stockIn.name,
@@ -105,9 +118,21 @@ function updateItemByUCCode(lineitem) {
 					newStock[key] = rec[key];
 				}
 
-				var newSysId = newStock.insert();
+				gs.info(
+					[
+						'--------------------------------------------',
+						'UC-002 | New Item (Creating)',
+						'Name           : ' + newStock.name,
+						'Unit Cost      : ' + newStock.u_stock_in_unit_cost,
+						'Order          : ' + newStock.order,
+						'Active         : ' + newStock.active,
+						'--------------------------------------------',
+					].join('\n'),
+				);
+
+				// var newSysId = newStock.insert();
 				lineitem.u_item = newSysId;
-				lineitem.update();
+				// lineitem.update();
 			}
 
 			break;
@@ -117,6 +142,7 @@ function updateItemByUCCode(lineitem) {
 			var maxCount = stockIn.getRowCount();
 			var maxCounter = maxCount * 100;
 			var orderCounter = maxCount * 100;
+			var count = 0;
 			var toReactivate = null;
 			var sysIdList = [];
 			var creditMap = {};
@@ -126,7 +152,7 @@ function updateItemByUCCode(lineitem) {
 				sysIdList.push(stockIn.sys_id + '');
 				creditMap[stockIn.sys_id + ''] = credit;
 
-				if (credit === 0) {
+				if (credit === 0 && toReactivate != '') {
 					toReactivate = stockIn.sys_id + '';
 				}
 			}
@@ -158,9 +184,9 @@ function updateItemByUCCode(lineitem) {
 					lineitem.setValue('u_item', sid);
 					reactivated = true;
 				} else {
-					orderCounter -= 100;
+					count += 100;
 					gr.active = false;
-					gr.order = orderCounter;
+					gr.order = count;
 					action = '🔴 Deactivate';
 				}
 
@@ -193,13 +219,25 @@ function updateItemByUCCode(lineitem) {
 				stockIn.order = orderCounter;
 				stockIn.active = false;
 
+				gs.info(
+					[
+						'--------------------------------------------',
+						'UC-004 | Old Item (Deactivating)',
+						'Name           : ' + stockIn.name,
+						'Sys ID         : ' + stockIn.sys_id,
+						'Order          : ' + stockIn.order,
+						'Active         : ' + stockIn.active,
+						'--------------------------------------------',
+					].join('\n'),
+				);
+
 				if (stockIn.u_parent_item == '') {
 					// parent item
 					stockIn.safetyCopy = parseInt(stockIn.u_safety_stock || 0, 10);
 					parents.push(stockIn);
 				}
 
-				stockIn.update();
+				// stockIn.update();
 				orderCounter += 100;
 			}
 
@@ -236,9 +274,22 @@ function updateItemByUCCode(lineitem) {
 						' ,required to update unit cost due to new procurement as ' +
 						lineitem.u_order.number;
 
-					var newSysId = newStock.insert();
+					gs.info(
+						[
+							'--------------------------------------------',
+							'UC-004 | New Item (Creating)',
+							'Name           : ' + newStock.name,
+							'Parent         : ' + newStock.u_parent_item,
+							'Unit Cost      : ' + newStock.u_stock_in_unit_cost,
+							'Order          : ' + newStock.order,
+							'Active         : ' + newStock.active,
+							'--------------------------------------------',
+						].join('\n'),
+					);
+
+					// var newSysId = newStock.insert();
 					lineitem.u_item = newSysId;
-					lineitem.update();
+					// lineitem.update();
 
 					orderCounter += 100;
 				});

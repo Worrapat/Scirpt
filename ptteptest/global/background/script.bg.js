@@ -1,16 +1,18 @@
-var itemUC2 = '7d47b42097c17290f86b34b71153af0b'; // TASK0072100
-var itemUC4 = '4952363c97013690f86b34b71153af73'; // TASK0072218
+// sn-scriptsync - Received from background script tab via SN Utils.
 
-var grUISILI = new GlideRecord('u_ist_stock_in_line_item');
-if (grUISILI.get(itemUC4)) {
-	updateItemByUCCode(grUISILI);
+// var itemUC1=""
+// var itemUC2=""
+var itemUC3 = '4731c7eb9795f290f86b34b71153af32'; // TASK0072330
+// var itemUC4=""
+
+var lineitem = new GlideRecord('u_ist_stock_in_line_item');
+if (lineitem.get(itemUC3)) {
+	updateItemByUCCode(lineitem);
 }
-
-// #region Update item by UC-Code
 
 function updateItemByUCCode(lineitem) {
 	var ucCode = lineitem.getValue('u_uc_code');
-	// gs.info('ucCode : ' + ucCode);
+	gs.info('ucCode : ' + ucCode);
 	var itemSysId = lineitem.getDisplayValue('u_item');
 	// gs.info('Item : ' + itemSysId + '(' + lineitem.getValue('sys_id') + ')');
 	var newCost = parseFloat(lineitem.getValue('u_unit_cost'));
@@ -25,23 +27,22 @@ function updateItemByUCCode(lineitem) {
 
 	var stockIn = new GlideRecord('u_istationery_stock_in');
 	stockIn.addEncodedQuery('u_master_item_name=' + masterItem + '^u_budget_holder=' + budgetHolder);
+
 	stockIn.orderBy('order');
 	stockIn.query();
 
 	switch (ucCode) {
+		// === UC-Code 1 : Update Unit Cost ของทุก record เดิม ===
 		case 'UC-001':
 			while (stockIn.next()) {
 				stockIn.u_stock_in_unit_cost = newCost;
-				stockIn.u_remarks =
-					'Ref to K.' +
-					lineitem.u_order.u_requestor.getDisplayValue() +
-					' ,required to update unit cost due to new procurement as ' +
-					lineitem.u_order.number;
-				stockIn.update();
+				// stockIn.update();
 			}
 			break;
 
 		case 'UC-002':
+			// gs.info('--- UC-002 Start ---');
+
 			var oldRecords = [];
 			var maxOrder = 0;
 
@@ -56,7 +57,8 @@ function updateItemByUCCode(lineitem) {
 				}
 
 				stockIn.active = false;
-				stockIn.update();
+				// stockIn.update();
+				// gs.info('[UC-002] Deactivated record: ' + stockIn.name + ' → order=' + stockIn.order);
 
 				if (currentOrder > maxOrder) {
 					maxOrder = currentOrder;
@@ -88,17 +90,22 @@ function updateItemByUCCode(lineitem) {
 			if (oldRecords.length > 0) {
 				var rec = oldRecords[0];
 
+				gs.info('[UC-002] Preparing to create new record...');
+				// gs.info(
+				// 	'[UC-002] Source sys_id=' +
+				// 	rec.sys_id +
+				// 	', safety_stock=' +
+				// 	rec.u_safety_stock +
+				// 	', parent=' +
+				// 	rec.u_parent_item,
+				// );
+
 				var newStock = new GlideRecord('u_istationery_stock_in');
 				newStock.initialize();
 				newStock.u_item = itemSysId;
 				newStock.u_stock_in_unit_cost = newCost;
 				newStock.active = true;
 				newStock.order = maxOrder + 100;
-				stockIn.u_remarks =
-					'Ref to K.' +
-					lineitem.u_order.u_requestor.getDisplayValue() +
-					' ,required to update unit cost due to new procurement as ' +
-					lineitem.u_order.number;
 
 				// Copy fields
 				for (var key in rec) {
@@ -106,61 +113,63 @@ function updateItemByUCCode(lineitem) {
 				}
 
 				var newSysId = newStock.insert();
-				lineitem.u_item = newSysId;
-				lineitem.update();
+				// gs.info(
+				// 	'[UC-002] Created new stock record: ' +
+				// 	newStock.name +
+				// 	' (' +
+				// 	newSysId +
+				// 	') order=' +
+				// 	newStock.order,
+				// );
 			}
 
+			// gs.info('--- UC-002 End ---');
 			break;
 
 		case 'UC-003':
+			// gs.info('--- UC-003 Start ---');
+
 			var reactivated = false;
 			var maxCount = stockIn.getRowCount();
+			// gs.info('maxCount : ' + maxCount);
 			var maxCounter = maxCount * 100;
 			var orderCounter = maxCount * 100;
-			var toReactivate = null;
-			var sysIdList = [];
-			var creditMap = {};
 
+			var toReactivate = null;
+
+			// 🔹 รอบแรก: หาตัวที่ควร reactivate (credit == 0)
 			while (stockIn.next()) {
 				var credit = parseFloat(stockIn.u_credit_avaliable) || 0;
-				sysIdList.push(stockIn.sys_id + '');
-				creditMap[stockIn.sys_id + ''] = credit;
-
 				if (credit === 0) {
-					toReactivate = stockIn.sys_id + '';
+					toReactivate = stockIn.getUniqueValue();
+					// break; // เอาเฉพาะตัวสุดท้าย (เจอแล้วหยุด) -> Commented out to find the LAST one
 				}
 			}
 
-			sysIdList.forEach(function (sid) {
-				var credit = creditMap[sid];
+			// 🔹 โหลดใหม่เพื่อวนรอบทำงาน
+			stockIn.query();
 
-				var gr = new GlideRecord('u_istationery_stock_in');
-				if (!gr.get(sid)) {
-					// โหลด record เดิม
-					gs.warn('Cannot find record for sys_id: ' + sid);
-					return; // ข้าม record ที่ไม่เจอ
-				}
-
-				var beforeCost = parseFloat(gr.u_stock_in_unit_cost) || 0;
+			while (stockIn.next()) {
+				var credit = parseFloat(stockIn.u_credit_avaliable) || 0;
+				var beforeCost = parseFloat(stockIn.u_stock_in_unit_cost) || 0;
 				var action = '';
 
-				if (credit === 0 && sid == toReactivate) {
-					gr.u_stock_in_unit_cost = newCost;
-					gr.active = true;
-					gr.order = maxCounter;
-					stockIn.u_remarks =
-						'Ref to K.' +
-						lineitem.u_order.u_requestor.getDisplayValue() +
-						' ,required to update unit cost due to new procurement as ' +
-						lineitem.u_order.number;
-
+				if (credit === 0 && stockIn.getUniqueValue() == toReactivate) {
+					// ✅ Reactivate ตัวสุดท้ายที่ credit == 0
+					stockIn.u_stock_in_unit_cost = newCost;
+					stockIn.active = true;
+					stockIn.order = maxCounter;
 					action = '💡 Reactivate (LAST)';
-					lineitem.setValue('u_item', sid);
+					lineitem.setValue('u_item', stockIn.sys_id);
+					// lineitem.update();
 					reactivated = true;
+					// gs.info('orderCounter : ' + orderCounter);
 				} else {
+					// 🔴 Deactivate เฉพาะ record ที่ credit != 0 หรือ credit == 0 แต่ไม่ใช่ตัวล่าสุด
 					orderCounter -= 100;
-					gr.active = false;
-					gr.order = orderCounter;
+					// gs.info('Sys ID : ' + stockIn.sys_id);
+					stockIn.active = false;
+					stockIn.order = orderCounter;
 					action = '🔴 Deactivate';
 				}
 
@@ -168,23 +177,25 @@ function updateItemByUCCode(lineitem) {
 					[
 						'--------------------------------------------',
 						'UC-003 | ' + action,
-						'Name           : ' + gr.name,
-						'Sys ID         : ' + gr.sys_id,
+						'Name           : ' + stockIn.name,
+						'Sys ID         : ' + stockIn.sys_id,
 						'Credit         : ' + credit,
-						'Active After   : ' + gr.active,
-						'Order Assigned : ' + gr.order,
+						'Active After   : ' + stockIn.active,
+						'Order Assigned : ' + stockIn.order,
 						'Cost Before    : ' + beforeCost,
 						'Cost After     : ' + (action.indexOf('Reactivate') >= 0 ? newCost : beforeCost),
 						'--------------------------------------------',
 					].join('\n'),
 				);
 
-				gr.update();
-			});
+				// stockIn.update();
+			}
 			break;
 
 		// === UC-Code 4 : ถ้า credit=0 → update cost, ถ้า > 0 → deactivate + create ใหม่ ===
 		case 'UC-004':
+			// gs.info('--- UC-004 Start ---');
+
 			var parents = []; // เก็บเฉพาะ parent items
 			var orderCounter = 100;
 
@@ -195,24 +206,30 @@ function updateItemByUCCode(lineitem) {
 
 				if (stockIn.u_parent_item == '') {
 					// parent item
+					// gs.info('Parent item found: ' + stockIn.name + ' (' + stockIn.sys_id + ')');
+					// gs.info('Safety stock: ' + stockIn.u_safety_stock);
+
+					// เก็บค่า safety stock ไว้กับ parent object
 					stockIn.safetyCopy = parseInt(stockIn.u_safety_stock || 0, 10);
 					parents.push(stockIn);
 				}
 
-				stockIn.update();
+				// stockIn.update();
+				records.push(stockIn);
 				orderCounter += 100;
 			}
 
+			// Step 2: ถ้ามี parent ให้สร้าง newStock
 			if (parents.length > 0) {
 				parents.forEach(function (parent) {
 					var newStock = new GlideRecord('u_istationery_stock_in');
-					newStock.initialize(); // เตรียม record ใหม่
+					// newStock.initialize(); // เตรียม record ใหม่
 					newStock.u_item = itemSysId;
 					newStock.u_credit_avaliable = 0;
 					newStock.u_stock_in_unit_cost = newCost;
 					newStock.active = true;
 
-					// Copy fields from parent
+					// Copy fields จาก parent
 					newStock.u_parent_item = parent.sys_id;
 					newStock.u_master_item_name = parent.u_master_item_name;
 					newStock.u_supplier = parent.u_supplier;
@@ -230,23 +247,20 @@ function updateItemByUCCode(lineitem) {
 					newStock.u_product_code = parent.u_product_code;
 					newStock.u_safety_stock = parent.safetyCopy; // ใช้ค่า safety stock จาก parent โดยตรง
 					newStock.order = orderCounter;
-					stockIn.u_remarks =
-						'Ref to K.' +
-						lineitem.u_order.u_requestor.getDisplayValue() +
-						' ,required to update unit cost due to new procurement as ' +
-						lineitem.u_order.number;
 
 					var newSysId = newStock.insert();
-					lineitem.u_item = newSysId;
-					lineitem.update();
+					lineitem.u_item = newSysId; // update reference ถ้าต้องการ
+					// lineitem.update();
 
-					orderCounter += 100;
+					// gs.info('Created newStock: ' + newStock.name);
+					// gs.info('Created newStock.u_safety_stock: ' + newStock.u_safety_stock);
+
+					orderCounter += 100; // เพิ่มลำดับต่อเนื่อง
 				});
 			}
+			// gs.info('--- UC-004 End ---');
 			break;
 		default:
 			break;
 	}
 }
-
-// #endregion Update item by UC-Code

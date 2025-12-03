@@ -1,3 +1,21 @@
+/***DO NOT REMOVE OR MODIFY THIS SECTION!!! Automatically added by "Force population of record producer used" business rule.
+Forces population of this record producer sys_id into the target record for reporting purposes.***/
+var usage = [
+	{
+		u_description_sin: '1edad638db8325d4f19edc2dd396190d',
+		u_unit_type: 'Pack',
+		u_unit_price: '40.00',
+		u_qty: '4',
+		u_total_price: '160.00',
+	},
+];
+
+var u_so_po_no_ = '7d4c9efcdb0725d4f19edc2dd3961962';
+
+var ticket_summary = `<table style="width:100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px;"><thead><tr style="background-color: #297bd8; color:#ffffff;"><th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:35%;">Description</th><th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:15%;">Use Case</th><th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:25%;">Stock-In Unit Cost (Excl. VAT)</th><th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:25%;">Stock-In Unit </th></tr></thead><tbody><tr><td style="border: 1px solid #ddd; padding: 8px; width:35%;">PTTEPI No.9 White Envelope (No window)</td><td style="border: 1px solid #ddd; padding: 8px; text-align:center; width:15%;">-</td><td style="border: 1px solid #ddd; padding: 8px; text-align:center; width:25%;">40.00</td><td style="border: 1px solid #ddd; padding: 8px; text-align:center; width:25%;">Pack</td></tr></tbody></table>`;
+
+var count = 1;
+
 //#region ENH-iStationery smart stock 2025
 // var ticket_summary = producer.u_ticket_summary;
 // gs.info("ticket_summary : " + ticket_summary);
@@ -5,20 +23,6 @@
 // gs.info("usage : " + usage);
 // var count = usage.getRowCount();
 // gs.info("count : " + count);
-
-var ticket_summary = `<table style="width:100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px;"><thead><tr style="background-color: #297bd8; color:#ffffff;"><th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:35%;">Description</th><th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:15%;">Use Case</th><th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:25%;">User Edit Price</th><th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:25%;">Stock-In Unit Cost (Excl. VAT)</th></tr></thead><tbody><tr><td style="border: 1px solid #ddd; padding: 8px; width:35%;">Rex</td><td style="border: 1px solid #ddd; padding: 8px; width:15%;">UC-003</td><td style="border: 1px solid #ddd; padding: 8px; width:25%;">2,030.00<td style="border: 1px solid #ddd; padding: 8px; width:25%;">2,005.00</td></td></tr></tbody></table>`;
-
-var count = 1;
-
-var usage = [
-	{
-		u_description_sin: '4d7bff6397743e50f86b34b71153af5e',
-		u_unit_type: 'Each',
-		u_unit_price: '2,030.00',
-		u_qty: '10',
-		u_total_price: '20,300.00',
-	},
-];
 
 // --- STEP 1: Extract Description + UC Code from HTML ---
 // var regex = /<tr[^>]*>\s*<td[^>]*>(.*?)<\/td>\s*<td[^>]*>(.*?)<\/td>/g;
@@ -63,10 +67,10 @@ function buildTicketSummary(rows) {
 		'</tr></thead><tbody>';
 
 	rows.forEach(function (r) {
-		gs.info('rows :' + JSON.stringify(r));
 		// Style ของ row
 		var rowStyle = 'text-align:center;';
-		if (r.itemUpdate === true) {
+		if (r.itemUpdate === true || r.ucCode == 'UC-001') {
+			gs.info('r' + JSON.stringify(r));
 			rowStyle += 'background-color:#ffe599; font-weight:bold;';
 		}
 
@@ -144,7 +148,7 @@ for (var i = 0; i < count; i++) {
 		// Map UC Code from HTML.
 		var ucCode = descriptionMap[nameItem.toLowerCase().trim()] || 'Out of case';
 
-		gs.info(nameItem + '|' + 'unitPrice : ' + unitPrice + '\n ' + 'type of : ' + typeof unitPrice);
+		// gs.info(nameItem + '|' + 'unitPrice : ' + unitPrice + '\n ' + 'type of : ' + typeof unitPrice);
 
 		var obj = {
 			// u_order: current.sys_id, // Ref Stock-In Request
@@ -158,6 +162,7 @@ for (var i = 0; i < count; i++) {
 			u_total_amount: usage[i].u_qty * parseFloat(unitPrice.replace(/,/g, '')),
 			u_unit_cost: unitPrice,
 			u_uc_code: ucCode,
+			master_item: item.u_master_item_name,
 		};
 
 		// new ISUtilsBase().addPo_qty(usage[i].u_description_sin, usage[i].u_qty, producer.u_so_po_no_);
@@ -167,19 +172,17 @@ for (var i = 0; i < count; i++) {
 	}
 }
 
-var u_budget_holder = '00c37a2747f0fa502cfb894c736d439a';
+var allRows = [];
 
 // --- STEP 4: Build SummaryHTML ---
 lineItemObjects.forEach(function (obj) {
 	var grUISI = new GlideRecord('u_istationery_stock_in');
 	grUISI.addQuery('name', obj.u_name);
 	// grUISI.addQuery('u_budget_holder', producer.u_budget_holder.u_budget_holder);
-	grUISI.addQuery('u_budget_holder', u_budget_holder);
-	grUISI.orderBy('name');
-	grUISI.orderByDesc('order');
 	grUISI.query();
 
 	var currentRows = [];
+	var hasOldRecord = false;
 
 	switch (obj.u_uc_code) {
 		case 'UC-001':
@@ -193,8 +196,9 @@ lineItemObjects.forEach(function (obj) {
 					ucCode: obj.u_uc_code,
 					order: grUISI.order.toString() || '',
 					active: isActive,
-					itemUpdate: true,
+					itemUpdate: false,
 					enableLink: true,
+					hasOldRecord: false,
 				});
 			}
 			break;
@@ -222,11 +226,10 @@ lineItemObjects.forEach(function (obj) {
 					order: inactiveOrder,
 					active: 'false',
 					enableLink: true,
+					hasOldRecord: false,
 				});
 				orderCounter += 100;
 			}
-
-			gs.info('orderCounter : ' + orderCounter);
 
 			// Step 3: Record ใหม่ (active)
 			currentRows.push({
@@ -238,23 +241,21 @@ lineItemObjects.forEach(function (obj) {
 				order: orderCounter,
 				itemUpdate: true,
 				active: 'true',
+				hasOldRecord: false,
 			});
 			break;
 
 		case 'UC-003':
+			var activeRows = [];
+			var inactiveRows = [];
 			var totalCount = grUISI.getRowCount();
-			var orderCounter = totalCount;
+			var rowArray = [];
+
 			while (grUISI.next()) {
 				var credit = parseInt(grUISI.u_credit_avaliable || 0);
-				gs.info('credit : ' + credit);
 				var isActive = credit === 0 ? 'true' : 'false';
-				gs.info('isActive : ' + isActive);
-				gs.info('unitPrice : ' + obj.u_unit_cost);
 
-				// order 300 ---> 2  record
-				var orderValue = orderCounter * 100;
-
-				currentRows.push({
+				var rowObj = {
 					sys_id: grUISI.getUniqueValue(),
 					description: grUISI.name.toString(),
 					stockInCost:
@@ -262,14 +263,32 @@ lineItemObjects.forEach(function (obj) {
 					unitPrice: obj.u_unit_cost,
 					ucCode: obj.u_uc_code,
 					u_credit_avaliable: credit,
-					order: orderValue,
 					active: isActive,
 					itemUpdate: isActive === 'true',
 					enableLink: true,
-				});
+					hasOldRecord: false,
+				};
 
-				orderCounter--;
+				if (isActive === 'true') {
+					activeRows.push(rowObj);
+				} else {
+					inactiveRows.push(rowObj);
+				}
 			}
+
+			// ใส่ order ให้ activeRows เริ่มจากสูงสุด
+			var orderCounter = activeRows.length + inactiveRows.length;
+			activeRows.forEach((row) => {
+				row.order = orderCounter * 100;
+				orderCounter--;
+			});
+			inactiveRows.forEach((row) => {
+				row.order = orderCounter * 100;
+				orderCounter--;
+			});
+
+			// รวม array สุดท้าย
+			currentRows = activeRows.concat(inactiveRows);
 
 			break;
 
@@ -288,6 +307,7 @@ lineItemObjects.forEach(function (obj) {
 					order: orderCounter,
 					active: 'false',
 					enableLink: true,
+					hasOldRecord: false,
 				});
 				orderCounter += 100;
 				records.push(grUISI);
@@ -304,31 +324,60 @@ lineItemObjects.forEach(function (obj) {
 					order: orderCounter,
 					itemUpdate: true,
 					active: 'true',
+					hasOldRecord: false,
 				});
 			}
 			break;
 
 		default:
-			while (grUISI.next()) {
-				var isActive = grUISI.getDisplayValue('active');
-				currentRows.push({
-					sys_id: grUISI.getUniqueValue(),
-					description: grUISI.name.toString(),
-					stockInCost: grUISI.u_stock_in_unit_cost.getDisplayValue(),
-					unitPrice: obj.u_unit_cost,
-					ucCode: obj.u_uc_code,
-					order: grUISI.order.toString() || '',
-					active: isActive,
-					enableLink: true,
-				});
+			if (u_so_po_no_ != '') {
+				var grUILUPI = new GlideRecord('u_ist_look_up_po_item');
+				grUILUPI.addEncodedQuery('u_po=' + u_so_po_no_ + '^u_master_item=' + obj.u_item);
+				grUILUPI.query();
+				while (grUILUPI.next()) {
+					var isActive = grUILUPI.u_master_item.active;
+					var isUpdate = obj.u_item == grUILUPI.u_master_item;
+					currentRows.push({
+						sys_id: grUILUPI.u_master_item,
+						description: grUILUPI.u_master_item.name.toString(),
+						stockInCost: grUILUPI.u_master_item.u_stock_in_unit_cost.getDisplayValue(),
+						unitPrice: obj.u_unit_cost,
+						ucCode: obj.u_uc_code,
+						order: grUILUPI.u_master_item.order.toString() || '',
+						active: isUpdate ? true : isActive,
+						itemUpdate: isUpdate,
+						enableLink: true,
+						hasOldRecord: true,
+					});
+				}
+			} else {
+				while (grUISI.next()) {
+					var isActive = grUISI.getDisplayValue('active');
+					var isUpdate = obj.u_item == grUISI.getUniqueValue();
+					currentRows.push({
+						sys_id: grUISI.getUniqueValue(),
+						description: grUISI.name.toString(),
+						stockInCost: grUISI.u_stock_in_unit_cost.getDisplayValue(),
+						unitPrice: obj.u_unit_cost,
+						ucCode: obj.u_uc_code,
+						order: obj.order.toString() || '',
+						active: isUpdate ? true : isActive,
+						itemUpdate: isUpdate,
+						enableLink: true,
+						hasOldRecord: true,
+					});
+				}
 			}
 			break;
 	}
 
-	gs.info('currentRows : ' + JSON.stringify(currentRows));
+	gs.info('currentRows - ' + JSON.stringify(currentRows));
 
 	var summaryHTML = buildTicketSummary(currentRows);
-
+	allRows = allRows.concat(currentRows); // รวมทุก obj
+	// --- หลัง loop ตรวจสอบครั้งเดียว ---
+	var isOldRecord = allRows.every((r) => r.hasOldRecord === true);
+	// gs.log("hasOldRecord for all lineItemObjects: " + hasOldRecord);
 	// --- build lineItem record ---
 	// lineItem.initialize();
 
@@ -343,6 +392,7 @@ lineItemObjects.forEach(function (obj) {
 	lineItem.u_unit_cost = obj.u_unit_cost;
 	lineItem.u_ticket_summary = summaryHTML;
 	lineItem.u_uc_code = (obj.u_uc_code || 'Out of case').toString();
+	lineItem.u_old_record = isOldRecord; // ใช้ flag ที่ตั้งไว้ใน switch
 
 	// Clean log
 	gs.info(`LineItem Debug:
@@ -354,11 +404,6 @@ lineItemObjects.forEach(function (obj) {
 	  TicketSummary:
 	${summaryHTML}`);
 
-	try {
-		// lineItem.insert();
-		// gs.info("Inserted lineItem: " + obj.u_name);
-	} catch (e) {
-		// gs.error("Insert failed: " + e.message);
-	}
+	// lineItem.insert();
 });
 //#endregion
