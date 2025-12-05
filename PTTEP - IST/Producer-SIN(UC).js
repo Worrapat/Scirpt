@@ -2,17 +2,17 @@
 Forces population of this record producer sys_id into the target record for reporting purposes.***/
 var usage = [
 	{
-		u_description_sin: '1edad638db8325d4f19edc2dd396190d',
-		u_unit_type: 'Pack',
-		u_unit_price: '40.00',
-		u_qty: '4',
-		u_total_price: '160.00',
+		u_description_sin: '1cff76be93b4921898803d697bba1025',
+		u_unit_type: 'Dozen',
+		u_unit_price: '95.00',
+		u_qty: '10',
+		u_total_price: '950.00',
 	},
 ];
 
-var u_so_po_no_ = '7d4c9efcdb0725d4f19edc2dd3961962';
+// var u_so_po_no_ = '7d4c9efcdb0725d4f19edc2dd3961962';
 
-var ticket_summary = `<table style="width:100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px;"><thead><tr style="background-color: #297bd8; color:#ffffff;"><th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:35%;">Description</th><th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:15%;">Use Case</th><th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:25%;">Stock-In Unit Cost (Excl. VAT)</th><th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:25%;">Stock-In Unit </th></tr></thead><tbody><tr><td style="border: 1px solid #ddd; padding: 8px; width:35%;">PTTEPI No.9 White Envelope (No window)</td><td style="border: 1px solid #ddd; padding: 8px; text-align:center; width:15%;">-</td><td style="border: 1px solid #ddd; padding: 8px; text-align:center; width:25%;">40.00</td><td style="border: 1px solid #ddd; padding: 8px; text-align:center; width:25%;">Pack</td></tr></tbody></table>`;
+var ticket_summary = `<table style="width:100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px;"><thead><tr style="background-color: #297bd8; color:#ffffff;"><th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:25%;">Description</th><th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:15%;">Use Case</th><th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:20%;">User Edit Price</th><th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:20%;">Stock-In Unit Cost (Excl. VAT)</th><th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:20%;">Stock-In Unit</th></tr></thead><tbody><tr><td style="border: 1px solid #ddd; padding: 8px; width:35%;">Measuring cup</td><td style="border: 1px solid #ddd; padding: 8px; width:15%; text-align:center">UC-003</td><td style="border: 1px solid #ddd; padding: 8px; width:25%; text-align:center">95.00<td style="border: 1px solid #ddd; padding: 8px; width:25%; text-align:center">93.45</td><td style="border: 1px solid #ddd; padding: 8px; width:25%; text-align:center">Dozen</td></td></tr></tbody></table>`;
 
 var count = 1;
 
@@ -67,10 +67,8 @@ function buildTicketSummary(rows) {
 		'</tr></thead><tbody>';
 
 	rows.forEach(function (r) {
-		// Style ของ row
 		var rowStyle = 'text-align:center;';
 		if (r.itemUpdate === true || r.ucCode == 'UC-001') {
-			gs.info('r' + JSON.stringify(r));
 			rowStyle += 'background-color:#ffe599; font-weight:bold;';
 		}
 
@@ -102,7 +100,8 @@ function buildTicketSummary(rows) {
 			formattedCost +
 			'</td>' +
 			'<td style="border:1px solid #ddd; padding:6px">' +
-			(r.itemUpdate === true ? '-' : r.unitPrice) +
+			// (r.itemUpdate === true ? '-' : r.unitPrice) +
+			(r.itemUpdate === true ? r.unitPrice : '-') +
 			'</td>' +
 			'<td style="border:1px solid #ddd; padding:6px">' +
 			r.active +
@@ -148,11 +147,10 @@ for (var i = 0; i < count; i++) {
 		// Map UC Code from HTML.
 		var ucCode = descriptionMap[nameItem.toLowerCase().trim()] || 'Out of case';
 
-		// gs.info(nameItem + '|' + 'unitPrice : ' + unitPrice + '\n ' + 'type of : ' + typeof unitPrice);
+		gs.info(nameItem + '|' + 'unitPrice : ' + unitPrice + '\n ' + 'type of : ' + typeof unitPrice);
 
 		var obj = {
 			// u_order: current.sys_id, // Ref Stock-In Request
-			// u_order: current, // Ref Stock-In Request
 			u_po_line: i + 1,
 			u_item: usage[i].u_description_sin,
 			u_name: nameItem,
@@ -162,12 +160,10 @@ for (var i = 0; i < count; i++) {
 			u_total_amount: usage[i].u_qty * parseFloat(unitPrice.replace(/,/g, '')),
 			u_unit_cost: unitPrice,
 			u_uc_code: ucCode,
-			master_item: item.u_master_item_name,
 		};
 
 		// new ISUtilsBase().addPo_qty(usage[i].u_description_sin, usage[i].u_qty, producer.u_so_po_no_);
 
-		// gs.info(' STEP 3 - obj : ' + JSON.stringify(obj));
 		lineItemObjects.push(obj);
 	}
 }
@@ -246,50 +242,65 @@ lineItemObjects.forEach(function (obj) {
 			break;
 
 		case 'UC-003':
-			var activeRows = [];
-			var inactiveRows = [];
-			var totalCount = grUISI.getRowCount();
-			var rowArray = [];
+			var allUCRows = [];
+			var firstActiveId = null; // เก็บ sys_id ของ active ตัวแรก
 
 			while (grUISI.next()) {
 				var credit = parseInt(grUISI.u_credit_avaliable || 0);
-				var isActive = credit === 0 ? 'true' : 'false';
+				var isActive = credit > 0;
 
-				var rowObj = {
+				var row = {
 					sys_id: grUISI.getUniqueValue(),
-					description: grUISI.name.toString(),
-					stockInCost:
-						credit === 0 ? obj.u_unit_cost : grUISI.u_stock_in_unit_cost.getDisplayValue(),
+					description: grUISI.name + '',
+					stockInCost: grUISI.u_stock_in_unit_cost.getDisplayValue(),
 					unitPrice: obj.u_unit_cost,
 					ucCode: obj.u_uc_code,
 					u_credit_avaliable: credit,
-					active: isActive,
-					itemUpdate: isActive === 'true',
+					active: isActive ? 'true' : 'false',
+					itemUpdate: isActive,
 					enableLink: true,
-					hasOldRecord: false,
 				};
 
-				if (isActive === 'true') {
-					activeRows.push(rowObj);
-				} else {
-					inactiveRows.push(rowObj);
+				// เก็บ active ตัวแรกเท่านั้น
+				if (isActive && !firstActiveId) {
+					firstActiveId = row.sys_id;
 				}
+
+				allUCRows.push(row);
 			}
 
-			// ใส่ order ให้ activeRows เริ่มจากสูงสุด
-			var orderCounter = activeRows.length + inactiveRows.length;
-			activeRows.forEach((row) => {
-				row.order = orderCounter * 100;
-				orderCounter--;
-			});
-			inactiveRows.forEach((row) => {
-				row.order = orderCounter * 100;
-				orderCounter--;
+			// ---------------------
+			// 🔥 Force ให้ active เหลือแค่ตัวเดียว
+			// ---------------------
+			allUCRows.forEach((r) => {
+				if (r.sys_id === firstActiveId) {
+					r.active = 'true';
+					r.itemUpdate = true;
+				} else {
+					r.active = 'false';
+					r.itemUpdate = false;
+				}
 			});
 
-			// รวม array สุดท้าย
-			currentRows = activeRows.concat(inactiveRows);
+			// ---------------------
+			// แยก inactive ก่อน active ตาม logic เดิม
+			// ---------------------
+			var inactive = allUCRows.filter((r) => r.active === 'false');
+			var active = allUCRows.filter((r) => r.active === 'true');
 
+			var orderCounter = 100;
+
+			inactive.forEach((r) => {
+				r.order = orderCounter;
+				orderCounter += 100;
+			});
+
+			active.forEach((r) => {
+				r.order = orderCounter;
+				orderCounter += 100;
+			});
+
+			currentRows = inactive.concat(active);
 			break;
 
 		case 'UC-004':
@@ -330,9 +341,9 @@ lineItemObjects.forEach(function (obj) {
 			break;
 
 		default:
-			if (u_so_po_no_ != '') {
+			if (producer.u_so_po_no_ != '') {
 				var grUILUPI = new GlideRecord('u_ist_look_up_po_item');
-				grUILUPI.addEncodedQuery('u_po=' + u_so_po_no_ + '^u_master_item=' + obj.u_item);
+				grUILUPI.addEncodedQuery('u_po=' + producer.u_so_po_no_ + '^u_master_item=' + obj.u_item);
 				grUILUPI.query();
 				while (grUILUPI.next()) {
 					var isActive = grUILUPI.u_master_item.active;
@@ -371,8 +382,6 @@ lineItemObjects.forEach(function (obj) {
 			break;
 	}
 
-	gs.info('currentRows - ' + JSON.stringify(currentRows));
-
 	var summaryHTML = buildTicketSummary(currentRows);
 	allRows = allRows.concat(currentRows); // รวมทุก obj
 	// --- หลัง loop ตรวจสอบครั้งเดียว ---
@@ -407,3 +416,36 @@ lineItemObjects.forEach(function (obj) {
 	// lineItem.insert();
 });
 //#endregion
+
+// Budget Item :Office Service & Supplies
+// Activities : Medical Expenses (CTR : C001H02019)
+
+// ticket_summary : <table style="width:100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px;"><thead><tr style="background-color: #297bd8; color:#ffffff;"><th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:25%;">Description</th><th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:15%;">Use Case</th><th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:20%;">User Edit Price</th><th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:20%;">Stock-In Unit Cost (Excl. VAT)</th><th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:20%;">Stock-In Unit</th></tr></thead><tbody><tr><td style="border: 1px solid #ddd; padding: 8px; width:35%;">Measuring cup</td><td style="border: 1px solid #ddd; padding: 8px; width:15%; text-align:center">UC-003</td><td style="border: 1px solid #ddd; padding: 8px; width:25%; text-align:center">95.00<td style="border: 1px solid #ddd; padding: 8px; width:25%; text-align:center">93.45</td><td style="border: 1px solid #ddd; padding: 8px; width:25%; text-align:center">Dozen</td></td></tr></tbody></table>|
+// 	count : 1
+// 	usage : [ {
+// "u_description_sin" : "1cff76be93b4921898803d697bba1025",
+// "u_unit_type" : "Dozen",
+// "u_unit_price" : "95.00",
+// "u_qty" : "10",
+// "u_total_price" : "950.00"
+// } ]
+// count : 1	*** Script
+
+// 05/12/2025 20:13:19
+// Information	admin.k	Measuring cup|unitPrice : 155.00
+// type of : string	*** Script
+
+// 05/12/2025 20:13:19
+// Information	admin.k	usage : [ {
+// "u_description_sin" : "6edd9dc6dbb6681017bcd3add396193a",
+// "u_unit_type" : "Piece",
+// "u_unit_price" : "155.00",
+// "u_qty" : "10",
+// "u_total_price" : "1,550.00"
+// } ]	*** Script
+
+// 05/12/2025 20:13:19
+// Information	admin.k	Workflow starting: CST - iStationery HQ Stock in, for SIN0002060	ENGINE
+
+// 05/12/2025 20:13:19
+// Information	admin.k	ticket_summary : <table style="width:100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px;"><thead><tr style="background-color: #297bd8; color:#ffffff;"><th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:25%;">Description</th><th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:15%;">Use Case</th><th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:20%;">User Edit Price</th><th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:20%;">Stock-In Unit Cost (Excl. VAT)</th><th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:20%;">Stock-In Unit</th></tr></thead><tbody><tr><td style="border: 1px solid #ddd; padding: 8px; width:35%;">Measuring cup</td><td style="border: 1px solid #ddd; padding: 8px; width:15%; text-align:center">UC-003</td><td style="border: 1px solid #ddd; padding: 8px; width:25%; text-align:center">155.00<td style="border: 1px solid #ddd; padding: 8px; width:25%; text-align:center">150.00</td><td style="border: 1px solid #ddd; padding: 8px; width:25%; text-align:center">Piece</td></td></tr></tbody></table>

@@ -49,15 +49,16 @@
 							<th style="width: 15%; text-align: center" class="tablecolumn">Item</th>
 							<th style="width: 30%; text-align: center" class="tablecolumn">Description</th>
 							<th style="width: 10%; text-align: center" class="tablecolumn">Unit Type</th>
-							<th style="width: 15%; text-align: center" class="tablecolumn">Unit Price</th>
-							<th style="width: 15%; text-align: center" class="tablecolumn">Quantity</th>
-							<th style="width: 15%; text-align: center" class="tablecolumn">Total Price</th>
+							<th style="width: 12%; text-align: center" class="tablecolumn">Unit Price</th>
+							<th style="width: 12%; text-align: center" class="tablecolumn">Edit Price</th>
+							<th style="width: 10%; text-align: center" class="tablecolumn">Quantity</th>
+							<th style="width: 16%; text-align: center" class="tablecolumn">Total Price</th>
 						</tr>
 					</thead>
 					<tbody>
 						<!---<tr dir-paginate="item in filteredItems = c.copyArr | itemsPerPage:15" current-page="c.currentPage" pagination-id="active">--->
 						<tr ng-if="c.copyArr.length <= 0" current-page="c.currentPage" pagination-id="active">
-							<td colspan="6" style="text-align: center">Empty Item</td>
+							<td colspan="7  " style="text-align: center">Empty Item</td>
 						</tr>
 						<tr
 							ng-repeat="item in c.copyArr"
@@ -85,6 +86,8 @@
 							<td>{{item.description}}</td>
 							<td style="text-align: center">{{item.unit_type}}</td>
 
+							<td style="text-align: center">{{item.stock_in_unit_cost}}</td>
+
 							<td style="text-align: center">
 								<!-- Can edit when has PO -->
 								<input
@@ -103,8 +106,6 @@
 								<!-- Can't edit when has PO -->
 								<span ng-show="!item.editable">{{ item.unit_price }}</span>
 							</td>
-
-							<!-- FIX : An invalid form control with name='unit_price' is not focusable. -->
 
 							<td style="text-align: center">
 								<input
@@ -149,11 +150,12 @@
 					<thead>
 						<tr>
 							<th style="width: 15%; text-align: center" class="tablecolumn">Item</th>
-							<th style="width: 35%; text-align: center" class="tablecolumn">Description</th>
+							<th style="width: 30%; text-align: center" class="tablecolumn">Description</th>
 							<th style="width: 10%; text-align: center" class="tablecolumn">Unit Type</th>
-							<th style="width: 10%; text-align: center" class="tablecolumn">Unit Price</th>
-							<th style="width: 15%; text-align: center" class="tablecolumn">Quantity</th>
-							<th style="width: 15%; text-align: center" class="tablecolumn">Total Price</th>
+							<th style="width: 12%; text-align: center" class="tablecolumn">Unit Price</th>
+							<th style="width: 12%; text-align: center" class="tablecolumn">Edit Price</th>
+							<th style="width: 10%; text-align: center" class="tablecolumn">Quantity</th>
+							<th style="width: 16%; text-align: center" class="tablecolumn">Total Price</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -161,7 +163,7 @@
 							ng-if="c.previewOBJ.length <= 0"
 							current-page="c.currentPage"
 							pagination-id="active">
-							<td colspan="6" style="text-align: center">Empty Item</td>
+							<td colspan="7" style="text-align: center">Empty Item</td>
 						</tr>
 						<tr
 							ng-repeat="item in c.previewOBJ"
@@ -189,6 +191,8 @@
 							<td style="text-align: left">{{item.description}}</td>
 							<td style="text-align: center">{{item.unit_type}}</td>
 							<!-- <td style="text-align: center">{{item.unit_price}}</td> -->
+							<td style="text-align: center">{{item.stock_in_unit_cost}}</td>
+
 							<td style="text-align: center">
 								<!-- Can edit when has PO -->
 								<!-- <input
@@ -216,6 +220,7 @@
 								<!-- Can't edit when has PO -->
 								<span ng-show="!item.editable">{{ item.unit_price }}</span>
 							</td>
+
 							<td style="text-align: center">
 								<input
 									style="text-align: center"

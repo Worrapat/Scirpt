@@ -66,41 +66,40 @@ api.controller = function ($scope, $rootScope) {
 					const prev = prevMap[item.description];
 
 					// --- normalize number ---
-					const prevPrice = prev
-						? parseFloat(String(prev.u_unit_price || '0').replace(/,/g, ''))
-						: parseFloat(String(item.oldPrice || '0').replace(/,/g, ''));
+					const prevPrice = parseFloat(String(item.oldPrice || '0').replace(/,/g, ''));
 					const newPrice = parseFloat(String(item.u_unit_price || '0').replace(/,/g, ''));
 
 					const flagOldRecord = newPrice !== prevPrice;
-
-					// --- ใช้ราคาเก่าจากรอบก่อนถ้ามี ---
-					const oldDisplay = prev
-						? prev.u_unit_price
-						: formatCurrency(item.oldPrice || item.u_unit_price);
+					const oldDisplay = item.oldPrice;
+					// const oldDisplay = prev
+					// 	? prev.u_unit_price
+					// 	: formatCurrency(item.oldPrice || item.u_unit_price);
 
 					return {
 						item_id: item.description,
 						description: res.name || item.u_description_sin,
 						uc_code: res.uc_code || '',
 						u_unit_price: formatCurrency(item.u_unit_price),
-						oldPrice: oldDisplay,
+						u_stock_in_unit: res.u_stock_in_unit,
+						oldPrice: formatCurrency(oldDisplay),
 						flagOldRecord,
 					};
 				});
 
 				c.previousItemsWithDetails = itemsWithDetails;
 
-				console.log('itemsWithDetails :', JSON.stringify(itemsWithDetails, null, 2));
+				// console.log('itemsWithDetails :', JSON.stringify(itemsWithDetails, null, 2));
 
 				// --- render table ---
 				let htmlValue =
 					'<table style="width:100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px;">' +
 					'<thead>' +
 					'<tr style="background-color: #297bd8; color:#ffffff;">' +
-					'<th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:35%;">Description</th>' +
+					'<th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:25%;">Description</th>' +
 					'<th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:15%;">Use Case</th>' +
-					'<th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:25%;">User Edit Price</th>' +
-					'<th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:25%;">Stock-In Unit Cost (Excl. VAT)</th>' +
+					'<th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:20%;">User Edit Price</th>' +
+					'<th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:20%;">Stock-In Unit Cost (Excl. VAT)</th>' +
+					'<th style="border: 1px solid #ddd; padding: 8px; text-align:center; width:20%;">Stock-In Unit</th>' +
 					'</tr></thead><tbody>';
 
 				itemsWithDetails.forEach((item) => {
@@ -108,11 +107,14 @@ api.controller = function ($scope, $rootScope) {
 					// let uc = item.flagOldRecord ? '-' : item.uc_code;
 					let uc = item.flagOldRecord ? item.uc_code : '-';
 					// console.log('uc :', uc);
-					// let newPrice = item.u_unit_price || '';
 					let newPrice = item.flagOldRecord ? item.u_unit_price : '-';
-					// let oldPrice = item.flagOldRecord ? '-' : item.oldPrice;
+					// let newPrice = item.flagOldRecord ? '-' : item.u_unit_price;
+					// console.log('newPrice :', newPrice);
 					let oldPrice = item.oldPrice;
 					// console.log('oldPrice :', oldPrice);
+
+					// ถ้า flagOldRecord เป็น true → แถวสีเหลืองอ่อน
+					let rowStyle = item.flagOldRecord ? 'background-color: #fffbe6;' : '';
 
 					htmlValue +=
 						`<tr><td style="border: 1px solid #ddd; padding: 8px; width:35%;">` +
@@ -125,6 +127,9 @@ api.controller = function ($scope, $rootScope) {
 						newPrice +
 						`<td style="border: 1px solid #ddd; padding: 8px; width:25%; text-align:center">` +
 						oldPrice +
+						`</td>` +
+						`<td style="border: 1px solid #ddd; padding: 8px; width:25%; text-align:center">` +
+						item.u_stock_in_unit +
 						`</td>` +
 						`</td></tr>`;
 				});
@@ -236,10 +241,12 @@ api.controller = function ($scope, $rootScope) {
 			const qty = toNum(item.qty);
 			if (qty > 0) {
 				const unitPrice = toNum(item.unit_price);
+				// const stock_in_unit_cost = toNum(item.stock_in_unit_cost);
 				c.newArr.push({
 					u_description_sin: item.item_id,
 					u_unit_type: item.unit_type,
 					u_unit_price: unitPrice.toFixed(2),
+					stock_in_unit_cost: item.stock_in_unit_cost,
 					oldPrice: item.oldPrice ? item.oldPrice.toFixed(2) : unitPrice.toFixed(2), // ✅ ใช้ oldPrice จาก referencevalue
 					u_qty: qty.toString(),
 					u_total_price: (unitPrice * qty).toFixed(2),
@@ -308,6 +315,7 @@ api.controller = function ($scope, $rootScope) {
 						u_description_sin: item.u_description_sin,
 						description: item.description,
 						u_unit_price: item.u_unit_price,
+						u_unit_price: item.stock_in_unit_cost,
 						oldPrice: item.oldPrice || item.u_unit_price, // ✅ ใช้ราคาเดิมถ้ามี
 						u_uc_code: item.u_uc_code || '',
 					};
@@ -334,10 +342,8 @@ api.controller = function ($scope, $rootScope) {
 					u_description_sin: item.u_description_sin,
 					description: copyItem ? copyItem.description : item.description || item.u_description_sin,
 					u_unit_price: item.u_unit_price,
-
-					// ✅ ใช้ oldPrice ที่ backend ส่งมาเท่านั้น
+					stock_in_unit_cost: item.stock_in_unit_cost,
 					oldPrice: item.oldPrice || copyItem?.oldPrice || '',
-
 					uc_code: copyItem ? copyItem.uc_code || '' : item.u_uc_code || '',
 				};
 			});
@@ -379,16 +385,13 @@ api.controller = function ($scope, $rootScope) {
 			// console.log('finalData : ' + JSON.stringify(item));
 		}
 
-		// แสดง total รวมแบบมี comma และแสดงใน form
 		c.total_display = c.total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 		$scope.page.g_form.setValue('u_grand_price_display', '฿' + c.total_display);
 		$scope.page.g_form.setValue('u_grand_price', c.total);
 
-		// ซ่อน modal
 		$('#myModal').modal('hide');
 		$('#myPreviewModal').modal('hide');
 
-		// อัปเดต cart field
 		if (finalData.length !== 0) {
 			$scope.page.g_form.setValue('istationary_stock_in_item_list_cart', JSON.stringify(finalData));
 			c.data.finalObject = c.copyArr;
@@ -402,7 +405,7 @@ api.controller = function ($scope, $rootScope) {
 		const rawMrvs = $scope.page.g_form.getValue('istationary_stock_in_item_list_cart');
 		const mrvs = rawMrvs ? JSON.parse(rawMrvs) : [];
 
-		// console.log('Fetching object value for preview:', mrvs);
+		console.log('Fetching object value for preview:', mrvs);
 
 		c.server.get({ action: 'referencepreviewvalue', arrdatavalue: mrvs }).then((response) => {
 			const data = response.data;
@@ -416,9 +419,9 @@ api.controller = function ($scope, $rootScope) {
 				m.u_unit_price = parseNumber(m.u_unit_price || 0);
 				m.u_total_price = parseNumber(m.u_total_price || 0);
 				m.u_qty = parseNumber(m.u_qty || 0);
-
+				m.stock_in_unit_cost = formatCurrency(m.stock_in_unit_cost);
 				m.u_unit_price_display = m.u_unit_price;
-				m.u_total_price_display = formatCurrency(m.u_total_price);
+				// m.u_total_price_display = formatCurrency(m.u_total_price);
 
 				const previewItem = previewMap[m.u_description_sin];
 				if (previewItem) {
@@ -438,6 +441,7 @@ api.controller = function ($scope, $rootScope) {
 				p.unit_price = parseNumber(p.unit_price || 0);
 				p.total_price = parseNumber(p.total_price || 0);
 				p.qty = parseNumber(p.qty || 0);
+				p.stock_in_unit_cost = formatCurrency(p.stock_in_unit_cost);
 			});
 
 			c.data.finalPreviewObject = finalPreview;
@@ -524,6 +528,7 @@ api.controller = function ($scope, $rootScope) {
 				u_description_sin: c.previewOBJ[y].item_id,
 				u_unit_type: c.previewOBJ[y].unit_type,
 				u_unit_price: c.previewOBJ[y].unit_price,
+				stock_in_unit_cost: c.previewOBJ[y].stock_in_unit_cost,
 				u_qty: c.previewOBJ[y].qty.toString(),
 				u_total_price: c.previewOBJ[y].totalPrice,
 			};
