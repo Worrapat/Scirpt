@@ -1,18 +1,7 @@
-[
-	{
-		"sys_id": "5f7a30ecdb4d9d58f19edc2dd396194c",
-		"name": "Nestle Coffee Alegria",
-		"credit": 138,
-		"active": "true",
-		"price": "฿2,057.94",
-		"order": -300
-	},
-	{
-		"sys_id": "fd9a3cfbdb818590964f971dd396198e",
-		"name": "Nestle Coffee Alegria",
-		"credit": 0,
-		"active": "false",
-		"price": "฿2,057.95",
-		"order": -100
-	}
-]
+{
+	"u_stock_in_unit": "Each",
+	"editable": true,
+	"name": "3 Layer face mask 50/Box",
+	"description": "1edd5dc6dbb6681017bcd3add396199f",
+	"uc_code": "UC-001"
+}

@@ -1,0 +1,178 @@
+<ul class="nav navbar-nav" aria-label="${Header}">
+	<div class="header-loader" ng-class="{'invisible': !loadingIndicator}">
+		<div class="hidden-xs hidden-sm sp-loading-indicator la-sm">
+			<div></div>
+			<div></div>
+			<div></div>
+		</div>
+	</div>
+	<li
+		ng-repeat="item in visibleItems"
+		ng-class="{dropdown: item.items.length > 0, 'header-menu-item': true}"
+		ng-include="'zncMenuTemplate'"></li>
+	<!-- Wishlist menu -->
+	<li
+		ng-if="options.enable_wishlist && data.isLoggedIn && data.showWishlist"
+		ng-show="!accessibilityEnabled"
+		id="wishlist-menu-wrapper"
+		class="dropdown hidden-xs header-menu-item">
+		<a
+			role="button"
+			href="javascript:void(0)"
+			data-toggle="dropdown"
+			id="wishlist-menu"
+			data-placement="bottom"
+			data-original-title="${Your Wish List currently has} {{wishlistItemCount}} ${items}"
+			aria-label="${Wish List}">
+			<span ng-bind-html="'${Wish List}'" aria-hidden="true"></span>
+			<span
+				ng-if="wishlistItemCount > 0"
+				aria-hidden="true"
+				class="label label-as-badge label-primary sp-navbar-badge-count">
+				{{wishlistItemCount}}
+			</span>
+		</a>
+		<div class="dropdown-menu wishlist-menu custom-drop-down">
+			<sp-widget widget="data.wishlistWidget"></sp-widget>
+		</div>
+	</li>
+	<li
+		ng-if="options.enable_wishlist && data.isLoggedIn && data.showWishlist"
+		class="dropdown"
+		ng-class="{'visible-xs': !accessibilityEnabled}">
+		<a
+			href="?id=sc_draftlist"
+			title="${Your Wish List currently has} {{wishlistItemCount}} ${items}"
+			data-toggle="tooltip"
+			data-placement="bottom"
+			class="toggle-dropdown"
+			role="button"
+			aria-label="${Your Wish List currently has} {{wishlistItemCount}} ${items}">
+			<span ng-bind-html="'${Wish List}'" aria-hidden="true"></span>
+			<span
+				ng-if="wishlistItemCount > 0"
+				aria-hidden="true"
+				class="label label-as-badge label-primary sp-navbar-badge-count">
+				{{wishlistItemCount}}
+			</span>
+		</a>
+	</li>
+	<!-- Shopping cart stuff -->
+	<li
+		ng-if="::options.enable_cart && data.isLoggedIn"
+		ng-show="!accessibilityEnabled"
+		id="cart-dropdown-wrapper"
+		class="dropdown hidden-xs header-menu-item">
+		<a
+			href
+			data-toggle="dropdown"
+			id="cart-dropdown"
+			data-placement="bottom"
+			data-original-title="${Your shopping cart currently has} {{cartItemCount}} ${items}"
+			aria-label="${Shopping cart}"
+			role="button">
+			<i class="fa fa-shopping-cart" aria-hidden="true"></i>
+			<span ng-bind-html="'${Cart}'" aria-hidden="true"></span>
+			<span
+				ng-if="cartItemCount > 0"
+				aria-hidden="true"
+				class="label label-as-badge label-primary sp-navbar-badge-count">
+				{{cartItemCount}}
+			</span>
+		</a>
+		<div class="dropdown-menu cart-dropdown custom-drop-down">
+			<sp-widget widget="data.cartWidget"></sp-widget>
+		</div>
+	</li>
+	<li
+		ng-if="::options.enable_cart && data.isLoggedIn"
+		class="header-menu-item"
+		ng-class="::{'visible-xs': !accessibilityEnabled}">
+		<a
+			ng-href="?id=sc_cart"
+			ng-click="collapse()"
+			data-toggle="tooltip"
+			data-placement="bottom"
+			data-original-title="${Your shopping cart currently has} {{cartItemCount}} ${items}"
+			class="toggle-dropdown"
+			aria-label="${Your shopping cart currently has} {{cartItemCount}} ${items}">
+			<i class="fa fa-shopping-cart" aria-hidden="true"></i>
+			<span ng-bind-html="'${Cart}'" aria-hidden="true"></span>
+			<span
+				ng-if="cartItemCount > 0"
+				aria-hidden="true"
+				class="label label-as-badge label-primary sp-navbar-badge-count">
+				{{cartItemCount}}
+			</span>
+		</a>
+	</li>
+	<li
+		ng-if="data.isLoggedIn && data.guidedTours && !isMobile"
+		class="dropdown header-menu-item gtd-dropdown-container">
+		<a
+			href
+			data-toggle="dropdown"
+			id="tour-dropdown"
+			data-placement="bottom"
+			data-toggle-second="tooltip"
+			ng-click="toggleTours()"
+			ng-blur="onToursItemBlur()"
+			data-original-title="{{tooltipTours}}"
+			aria-label="{{data.guidedTours.label}}"
+			role="button">
+			<span ng-bind-html="'${Tours}'" aria-hidden="true"></span>
+			<span class="badge-container" ng-if="data.guidedTours.collection.length > 0">
+				<span aria-hidden="true" class="label label-as-badge label-primary sp-navbar-badge-count">
+					&nbsp;
+				</span>
+			</span>
+		</a>
+		<div
+			ng-if="data.guidedTours.collection.length < 1 && !currentTour"
+			class="dropdown-menu empty-dropdown">
+			<div class="panel ng-scope">
+				<div class="panel-body">
+					<div class="empty-tour-content" role="alert">
+						<h4>${You have no tours on this page}</h4>
+						<p>${Tours appear when your administrator creates them on specific pages}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<ul
+			ng-if="data.guidedTours.collection.length > 0 && !currentTour"
+			class="dropdown-menu"
+			role="menu"
+			aria-label="${Tours}">
+			<li ng-repeat="mi in data.guidedTours.collection" class="ng-scope dropdown-menu-line">
+				<a
+					role="button"
+					href
+					title="{{::mi.title}}"
+					target="{{::mi.target}}"
+					ng-click="mi.clicked()">
+					{{::mi.title | characters:60}}
+				</a>
+			</li>
+		</ul>
+		<div
+			ng-if="currentTour"
+			tabindex="0"
+			class="dropdown-menu end-tour-menu"
+			aria-label="${End Current Tour}: {{currentTour.name}}">
+			<div class="end-tour-body ng-scope">
+				<a
+					type="button"
+					class="btn btn-primary"
+					tabindex="0"
+					ng-click="endTour()"
+					ng-keydown="endTourByKeyDown($event)">
+					${End Tour}
+				</a>
+				<p class="end-tour-name" title="{{currentTour.name}}">
+					${Current Tour}: {{currentTour.name}}
+				</p>
+			</div>
+		</div>
+	</li>
+</ul>

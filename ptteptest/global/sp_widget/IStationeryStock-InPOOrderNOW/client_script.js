@@ -252,7 +252,7 @@ api.controller = function ($scope, $rootScope) {
 	};
 
 	c.updatMRV = function (finalData) {
-		//console.log('updateMRV : ' + finalData);
+		console.log('updateMRV : ' + finalData);
 		c.total = 0;
 		for (var v = 0; v < finalData.length; v++) {
 			if (parseFloat(finalData[v].u_qty) > 0) {
@@ -374,8 +374,7 @@ api.controller = function ($scope, $rootScope) {
 			c.total_display = c.total_display - item.totalPrice;
 			// console.log('base : ' + c.total_display);
 		}
-		var summary = '';
-		var orderSummary = '';
+
 		if (parseFloat(item.qty) == 0 || parseFloat(item.qty) == '0' || item.qty == '') {
 			item.totalPrice = 0.0;
 			//--- Dynamic Po Rem ---//

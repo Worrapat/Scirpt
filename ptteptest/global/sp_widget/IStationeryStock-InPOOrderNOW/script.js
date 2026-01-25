@@ -16,7 +16,6 @@
 		po_item.query();
 
 		while (po_item.next()) {
-			// console.log('PO Item: ' + po_item.u_master_item.getDisplayValue('name'));
 			var master_item = po_item.u_master_item.getRefRecord();
 			var u_master_item_name = po_item.u_master_item.u_master_item_name;
 			var u_ist_budget_holder = po_item.u_po.u_ist_budget_holder;
@@ -42,8 +41,6 @@
 					'^ORu_groupDYNAMICd6435e965f510100a9ad2572f2b47744',
 			);
 			checkItem.query();
-			// console.log('Permission Query: ' + checkItem.getEncodedQuery());
-			// console.log(checkItem.next());
 			while (checkItem.next()) {
 				var itemId = checkItem.u_item.toString();
 				// ป้องกัน duplicate
@@ -53,17 +50,8 @@
 				}
 			}
 
-			// console.log('Allowed Items: ' + arrAllowed.join(','));
 			// เอา arrAllowed ไปใช้ filter record อีกที
 			var isAllowed = arrAllowed.indexOf(u_master_item_name.toString()) > -1;
-			if (!isAllowed) {
-				console.log(
-					'Item ' +
-						master_item.getDisplayValue('name') +
-						' is not allowed for this user. Skipping.',
-				);
-				continue; // skip to next po_item
-			}
 
 			var request_qty = 0;
 			var line_item = new GlideRecord('u_ist_stock_in_line_item');
@@ -385,6 +373,8 @@
 		mrvs_po_item.query();
 
 		while (mrvs_po_item.next()) {
+			console.log('mrvs_po_item Query: ' + mrvs_po_item.getEncodedQuery());
+
 			var mast_item = mrvs_po_item.u_master_item.getRefRecord();
 
 			var request_qty = 0;
@@ -418,7 +408,7 @@
 					'^ORu_groupDYNAMICd6435e965f510100a9ad2572f2b47744',
 			);
 			checkItem.query();
-			// console.log('Permission Query: ' + checkItem.getEncodedQuery());
+			console.log('Permission Query: ' + checkItem.getEncodedQuery());
 			// console.log(checkItem.next());
 			while (checkItem.next()) {
 				var itemId = checkItem.u_item.toString();
@@ -429,17 +419,8 @@
 				}
 			}
 
-			console.log('Allowed Items: ' + arrAllowed.join(','));
 			// เอา arrAllowed ไปใช้ filter record อีกที
 			var isAllowed = arrAllowed.indexOf(u_master_item_name.toString()) > -1;
-			if (!isAllowed) {
-				console.log(
-					'Item ' +
-						master_item.getDisplayValue('name') +
-						' is not allowed for this user. Skipping.',
-				);
-				continue; // skip to next po_item
-			}
 
 			var po_max_rem = mrvs_po_item.u_po_remaining.getValue();
 			var po_rem = mrvs_po_item.u_po_remaining.getValue();

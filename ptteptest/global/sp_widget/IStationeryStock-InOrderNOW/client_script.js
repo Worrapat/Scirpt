@@ -32,8 +32,6 @@ api.controller = function ($scope, $rootScope) {
 
 	// ===== Update UC Code Table =====
 	c.updateUCCode = function (items) {
-		// console.log('items :', items);
-
 		// ensure items is array
 		if (!Array.isArray(items) || items.length === 0) {
 			$scope.page.g_form.setValue(
@@ -57,32 +55,20 @@ api.controller = function ($scope, $rootScope) {
 				const results = r.data.results || [];
 				const resultMap = Object.fromEntries(results.map((res) => [res.description, res]));
 
-				// --- แปลง previous list เป็น map เพื่อ lookup ง่าย ---
-				const prevMap = Object.fromEntries(c.previousItemsWithDetails.map((i) => [i.item_id, i]));
-
-				// --- map items ใหม่ ---
-				const itemsWithDetails = items.map((item) => {
+				// map items has uc_code and description
+				let itemsWithDetails = items.map((item) => {
 					const res = resultMap[item.u_description_sin] || {};
-					const prev = prevMap[item.description];
-
-					// --- normalize number ---
-					const prevPrice = parseFloat(String(item.oldPrice || '0').replace(/,/g, ''));
-					const newPrice = parseFloat(String(item.u_unit_price || '0').replace(/,/g, ''));
-
-					const flagOldRecord = newPrice !== prevPrice;
-					const oldDisplay = item.oldPrice;
-					// const oldDisplay = prev
-					// 	? prev.u_unit_price
-					// 	: formatCurrency(item.oldPrice || item.u_unit_price);
+					const isPriceChanged =
+						parseNumber(res.stock_in_unit_cost) !== parseNumber(item.u_unit_price);
 
 					return {
 						item_id: item.description,
 						description: res.name || item.u_description_sin,
 						uc_code: res.uc_code || '',
 						u_unit_price: formatCurrency(item.u_unit_price),
+						oldPrice: formatCurrency(item.oldPrice),
+						flagOldRecord: isPriceChanged,
 						u_stock_in_unit: res.u_stock_in_unit,
-						oldPrice: formatCurrency(oldDisplay),
-						flagOldRecord,
 					};
 				});
 
@@ -104,17 +90,9 @@ api.controller = function ($scope, $rootScope) {
 
 				itemsWithDetails.forEach((item) => {
 					let desc = item.description || '';
-					// let uc = item.flagOldRecord ? '-' : item.uc_code;
 					let uc = item.flagOldRecord ? item.uc_code : '-';
-					// console.log('uc :', uc);
 					let newPrice = item.flagOldRecord ? item.u_unit_price : '-';
-					// let newPrice = item.flagOldRecord ? '-' : item.u_unit_price;
-					// console.log('newPrice :', newPrice);
 					let oldPrice = item.oldPrice;
-					// console.log('oldPrice :', oldPrice);
-
-					// ถ้า flagOldRecord เป็น true → แถวสีเหลืองอ่อน
-					let rowStyle = item.flagOldRecord ? 'background-color: #fffbe6;' : '';
 
 					htmlValue +=
 						`<tr><td style="border: 1px solid #ddd; padding: 8px; width:35%;">` +
@@ -188,7 +166,7 @@ api.controller = function ($scope, $rootScope) {
 					finalObject.forEach((el) => {
 						const price = parseAndRound(el.unit_price);
 						el.unit_price = price;
-						el.oldPrice = price; // ✅ เก็บ oldPrice ไว้ตอนแรกเลย
+						el.oldPrice = price;
 						el.uc_code = el.uc_code || '';
 					});
 					c.copyArr = JSON.parse(JSON.stringify(finalObject));
@@ -200,7 +178,6 @@ api.controller = function ($scope, $rootScope) {
 						const previewItem = previewMap[m.u_description_sin];
 						if (previewItem) {
 							const mrvsPrice = parseAndRound(m.u_unit_price);
-							// ✅ ถ้ามีค่าใน MRVS ให้ใช้ค่านั้นเป็นหลัก
 							if (mrvsPrice && mrvsPrice > 0) {
 								previewItem.unit_price = mrvsPrice;
 							} else {
@@ -239,9 +216,9 @@ api.controller = function ($scope, $rootScope) {
 		// ---------- Step 1: Build newArr ----------
 		c.copyArr.forEach((item) => {
 			const qty = toNum(item.qty);
+			// console.log('item.qty :', item.qty);
 			if (qty > 0) {
 				const unitPrice = toNum(item.unit_price);
-				// const stock_in_unit_cost = toNum(item.stock_in_unit_cost);
 				c.newArr.push({
 					u_description_sin: item.item_id,
 					u_unit_type: item.unit_type,
@@ -255,81 +232,61 @@ api.controller = function ($scope, $rootScope) {
 				});
 			}
 		});
-		// console.log('**** c.newArr =>: ' + JSON.stringify(c.newArr) + '****');
 
 		// ---------- Step 2: If oldData exists, sync with newArr ----------
 		if (c.oldData && c.oldData.length > 0) {
 			c.server.get({ action: 'checkmultirow', newArr: c.newArr, oldArr: c.oldData }).then((r) => {
-				const oldArr = (r.data.oldArr || []).map((item) => ({ ...item }));
+				// Prepare data
+				const oldArr = r.data.oldArr || [];
+				const newArr = c.newArr || [];
+				console.log(' oldArr :', JSON.stringify(oldArr, null, 2));
+				console.log(' newArr :', JSON.stringify(newArr, null, 2));
 
-				// Build index for quick lookup
-				const newMap = Object.fromEntries(c.newArr.map((n) => [n.u_description_sin, n]));
-
-				oldArr.forEach((item) => {
-					const match = newMap[item.u_description_sin];
-					if (!match) return;
-
-					// ✅ เก็บราคาเก่าก่อนจะอัปเดต
-					if (!item.oldPrice) {
-						item.oldPrice = toNum(item.u_unit_price).toFixed(2);
-						// console.log('Set oldPrice for item:', item.oldPrice);
-					}
-
-					// Update qty ถ้าเปลี่ยน
-					const newQty = toNum(match.u_qty);
-					if (newQty !== toNum(item.u_qty)) item.u_qty = newQty;
-
-					// Update unit price ถ้าเปลี่ยน
-					const newPrice = toNum(match.u_unit_price);
-					if (newPrice !== toNum(item.u_unit_price)) {
-						item.u_unit_price = newPrice.toFixed(2);
-						// ❌ ไม่แตะ oldPrice เพื่อคงค่าเดิมไว้
-					}
-
-					// Recalculate total price
-					item.u_total_price = (toNum(item.u_unit_price) * toNum(item.u_qty)).toFixed(2);
-
-					// Sync UC code
-					if (match.u_uc_code && match.u_uc_code !== item.u_uc_code) {
-						item.u_uc_code = match.u_uc_code;
-					}
-
-					// Sync description
-					if (!item.description) {
-						item.description = match.description || '';
-					}
+				// Build index from newArr
+				const newIndex = {};
+				newArr.forEach((item) => {
+					newIndex[item.u_description_sin] = item;
 				});
 
-				// Add any new rows from newArr not in oldArr
-				c.newArr.forEach((n) => {
-					if (!oldArr.find((i) => i.u_description_sin === n.u_description_sin)) {
-						oldArr.push({ ...n });
-					}
-				});
+				// Merge for MRV
+				const finalMRVArr = oldArr.map((oldItem) => {
+					const newItem = newIndex[oldItem.u_description_sin];
 
-				// Prepare items for UC code table
-				const itemsForUC = oldArr.map((item) => {
-					// console.log('**** oldArr =>: ' + JSON.stringify(item) + '****');
-					const copyItem = c.copyArr.find((ci) => ci.item_id === item.u_description_sin);
+					// No change
+					if (!newItem) {
+						return {
+							...oldItem,
+							u_unit_price: formatCurrency(oldItem.u_unit_price),
+							u_total_price: formatCurrency(oldItem.u_total_price),
+						};
+					}
+
+					// With change
+					const qty = parseNumber(newItem.u_qty);
+					const unitPrice = parseNumber(newItem.u_unit_price);
+
 					return {
-						u_description_sin: item.u_description_sin,
-						description: item.description,
-						u_unit_price: item.u_unit_price,
-						u_unit_price: item.stock_in_unit_cost,
-						oldPrice: item.oldPrice || item.u_unit_price, // ✅ ใช้ราคาเดิมถ้ามี
-						u_uc_code: item.u_uc_code || '',
+						...oldItem,
+						u_unit_type: newItem.u_unit_type,
+						u_qty: qty.toString(),
+						u_unit_price: formatCurrency(unitPrice), // Current Price
+						stock_in_unit_cost: formatCurrency(oldItem.stock_in_unit_cost), // reference
+						u_total_price: formatCurrency(qty * unitPrice),
 					};
 				});
 
-				c.updateUCCode(itemsForUC);
+				// Assign & update
+				c.olddataArr = finalMRVArr;
+				c.newDataArr = finalMRVArr;
 
-				// Update final data & MRV
-				c.olddataArr = oldArr;
-				c.newDataArr = oldArr;
-				c.finalData = oldArr;
-				c.updatMRV(c.newDataArr);
+				console.log(' finalMRVArr :', JSON.stringify(finalMRVArr, null, 2));
+
+				c.updateUCCode(finalMRVArr);
+				c.updatMRV(finalMRVArr);
 			});
 		} else {
+			console.log('**** First time case  ****');
+
 			// ---------- First time case ----------
 			c.olddataArr = c.newArr;
 			c.newDataArr = c.newArr;
@@ -337,7 +294,6 @@ api.controller = function ($scope, $rootScope) {
 
 			const itemsForUC = c.newArr.map((item) => {
 				const copyItem = c.copyArr.find((ci) => ci.item_id === item.u_description_sin);
-
 				return {
 					u_description_sin: item.u_description_sin,
 					description: copyItem ? copyItem.description : item.description || item.u_description_sin,
@@ -348,7 +304,7 @@ api.controller = function ($scope, $rootScope) {
 				};
 			});
 
-			// console.log('✅ itemsForUC (from backend oldPrice):', JSON.stringify(itemsForUC, null, 2));
+			// console.log(' itemsForUC :', JSON.stringify(itemsForUC, null, 2));
 
 			c.updateUCCode(itemsForUC);
 			c.updatMRV(c.newDataArr);
@@ -362,22 +318,17 @@ api.controller = function ($scope, $rootScope) {
 		for (var v = 0; v < finalData.length; v++) {
 			let item = finalData[v];
 
-			// แปลง qty และ unit_price เป็นตัวเลข
 			let qty = parseFloat(item.u_qty) || 0;
 			let unitPrice = parseFloat(item.u_unit_price.toString().replace(/,/g, '')) || 0;
 
 			if (qty > 0) {
-				// คำนวณ total ใหม่
 				let totalPrice = qty * unitPrice;
 
-				// เก็บราคาที่ format แล้ว
 				item.u_unit_price = formatCurrency(unitPrice);
 				item.u_total_price = formatCurrency(totalPrice);
 
-				// รวม total ทั้งหมด
 				c.total += totalPrice;
 			} else {
-				// กรณี qty = 0, กำหนดราคาเป็น 0
 				item.u_unit_price = formatCurrency(0);
 				item.u_total_price = formatCurrency(0);
 			}
@@ -405,7 +356,7 @@ api.controller = function ($scope, $rootScope) {
 		const rawMrvs = $scope.page.g_form.getValue('istationary_stock_in_item_list_cart');
 		const mrvs = rawMrvs ? JSON.parse(rawMrvs) : [];
 
-		console.log('Fetching object value for preview:', mrvs);
+		// console.log('Fetching object value for preview:', mrvs);
 
 		c.server.get({ action: 'referencepreviewvalue', arrdatavalue: mrvs }).then((response) => {
 			const data = response.data;
@@ -449,10 +400,8 @@ api.controller = function ($scope, $rootScope) {
 			c.previewOBJ = c.copyObjectArr;
 
 			const totalNumber = parseNumber(data.grand_price);
-			// console.log('totalNumber :', totalNumber);
 
 			const totalDisplay = formatCurrency(data.grand_price);
-			// console.log('totalDisplay :', totalDisplay);
 
 			c.total_display = totalDisplay;
 			$scope.page.g_form.setValue('u_grand_price', totalNumber);
@@ -482,8 +431,6 @@ api.controller = function ($scope, $rootScope) {
 
 	// ===== UPDATE PRICE FROM INPUT =====
 	$scope.updatePrice = function (item) {
-		// console.log('Updating price for item:', item);
-		const parseNumber = (value) => parseFloat((value || '0').toString().replace(/,/g, '')) || 0;
 		const formatNumber = (value) =>
 			parseFloat(value)
 				.toFixed(2)
@@ -554,7 +501,10 @@ api.controller = function ($scope, $rootScope) {
 						return { ...oldItem, u_unit_price: formatCurrency(newPriceNum) };
 					}
 
-					return { ...oldItem, u_unit_price: formatCurrency(oldItem.u_unit_price) };
+					return {
+						...oldItem,
+						u_unit_price: formatCurrency(oldItem.u_unit_price),
+					};
 				});
 
 				// Save the processed array

@@ -1,8 +1,8 @@
-var itemUC2 = '7d47b42097c17290f86b34b71153af0b'; // TASK0072100
-var itemUC4 = '4952363c97013690f86b34b71153af73'; // TASK0072218
+var itemUC2 = '83682aa397e9b210f86b34b71153af23'; // TASK0072606
+var itemUC4 = '76350fb397293610f86b34b71153af95'; // TASK0072626
 
 var grUISILI = new GlideRecord('u_ist_stock_in_line_item');
-if (grUISILI.get(itemUC4)) {
+if (grUISILI.get(itemUC2)) {
 	updateItemByUCCode(grUISILI);
 }
 
@@ -37,6 +37,13 @@ function updateItemByUCCode(lineitem) {
 					lineitem.u_order.u_requestor.getDisplayValue() +
 					' ,required to update unit cost due to new procurement as ' +
 					lineitem.u_order.number;
+				stockIn.u_remarks =
+					'Ref to ' +
+					lineitem.u_order.number +
+					' ,' +
+					'K' +
+					lineitem.u_order.u_requestor.getDisplayValue() +
+					' required to update unit cost due to new procurement';
 				stockIn.update();
 			}
 			break;
@@ -56,13 +63,13 @@ function updateItemByUCCode(lineitem) {
 				}
 
 				stockIn.active = false;
-				stockIn.update();
+				// stockIn.update();
 
 				if (currentOrder > maxOrder) {
 					maxOrder = currentOrder;
 				}
 
-				if (!stockIn.u_parent_item) {
+				if (stockIn.u_parent_item == '') {
 					oldRecords.push({
 						u_parent_item: stockIn.sys_id,
 						name: stockIn.name,
@@ -94,20 +101,25 @@ function updateItemByUCCode(lineitem) {
 				newStock.u_stock_in_unit_cost = newCost;
 				newStock.active = true;
 				newStock.order = maxOrder + 100;
-				stockIn.u_remarks =
-					'Ref to K.' +
+				// newStock.u_remarks = 'Ref to K.' + lineitem.u_order.u_requestor
+				// 	.getDisplayValue() + ' ,required to update unit cost due to new procurement as ' + lineitem.u_order.number;
+				newStock.u_remarks =
+					'Ref to ' +
+					lineitem.u_order.number +
+					',' +
+					'K.' +
 					lineitem.u_order.u_requestor.getDisplayValue() +
-					' ,required to update unit cost due to new procurement as ' +
-					lineitem.u_order.number;
-
+					' required to update unit cost due to new procurement';
+				// console.log("newStock.u_remarks - " + newStock.u_remarks);
 				// Copy fields
 				for (var key in rec) {
 					newStock[key] = rec[key];
 				}
+				// console.log("rec - " + rec.u_parent_item)
 
-				var newSysId = newStock.insert();
-				lineitem.u_item = newSysId;
-				lineitem.update();
+				// var newSysId = newStock.insert();
+				// lineitem.u_item = newSysId;
+				// lineitem.update();
 			}
 
 			break;
@@ -117,6 +129,7 @@ function updateItemByUCCode(lineitem) {
 			var maxCount = stockIn.getRowCount();
 			var maxCounter = maxCount * 100;
 			var orderCounter = maxCount * 100;
+			var count = 0;
 			var toReactivate = null;
 			var sysIdList = [];
 			var creditMap = {};
@@ -126,7 +139,7 @@ function updateItemByUCCode(lineitem) {
 				sysIdList.push(stockIn.sys_id + '');
 				creditMap[stockIn.sys_id + ''] = credit;
 
-				if (credit === 0) {
+				if (credit === 0 && toReactivate != '') {
 					toReactivate = stockIn.sys_id + '';
 				}
 			}
@@ -148,20 +161,20 @@ function updateItemByUCCode(lineitem) {
 					gr.u_stock_in_unit_cost = newCost;
 					gr.active = true;
 					gr.order = maxCounter;
-					stockIn.u_remarks =
+					gr.u_remarks =
 						'Ref to K.' +
 						lineitem.u_order.u_requestor.getDisplayValue() +
 						' ,required to update unit cost due to new procurement as ' +
 						lineitem.u_order.number;
 
-					action = '💡 Reactivate (LAST)';
+					action = ' Reactivate (LAST)';
 					lineitem.setValue('u_item', sid);
 					reactivated = true;
 				} else {
-					orderCounter -= 100;
+					count += 100;
 					gr.active = false;
-					gr.order = orderCounter;
-					action = '🔴 Deactivate';
+					gr.order = count;
+					action = ' Deactivate';
 				}
 
 				gs.info(
@@ -196,10 +209,30 @@ function updateItemByUCCode(lineitem) {
 				if (stockIn.u_parent_item == '') {
 					// parent item
 					stockIn.safetyCopy = parseInt(stockIn.u_safety_stock || 0, 10);
-					parents.push(stockIn);
+					var isParentItem = stockIn.sys_id;
+					console.log('isParentItem  - ' + isParentItem);
+					parents.push({
+						sys_id: stockIn.sys_id.toString(),
+						u_master_item_name: stockIn.u_master_item_name.toString(),
+						u_supplier: stockIn.u_supplier.toString(),
+						u_budget_holder: stockIn.u_budget_holder.toString(),
+						u_main_category: stockIn.u_main_category.toString(),
+						u_category: stockIn.u_category.toString(),
+						u_sub_category: stockIn.u_sub_category.toString(),
+						u_type_of_item: stockIn.u_type_of_item.toString(),
+						u_group_item: stockIn.u_group_item.toString(),
+						u_stock_in_unit: stockIn.u_stock_in_unit.toString(),
+						u_multiplier: stockIn.u_multiplier.toString(),
+						u_unit: stockIn.u_unit.toString(),
+						price: stockIn.price,
+						name: stockIn.name.toString(),
+						u_product_code: stockIn.u_product_code.toString(),
+						safetyCopy: parseInt(stockIn.u_safety_stock || 0, 10),
+					});
+					// parents.push(stockIn);
 				}
 
-				stockIn.update();
+				// stockIn.update();
 				orderCounter += 100;
 			}
 
@@ -230,15 +263,16 @@ function updateItemByUCCode(lineitem) {
 					newStock.u_product_code = parent.u_product_code;
 					newStock.u_safety_stock = parent.safetyCopy; // ใช้ค่า safety stock จาก parent โดยตรง
 					newStock.order = orderCounter;
-					stockIn.u_remarks =
+					newStock.u_remarks =
 						'Ref to K.' +
 						lineitem.u_order.u_requestor.getDisplayValue() +
 						' ,required to update unit cost due to new procurement as ' +
 						lineitem.u_order.number;
 
-					var newSysId = newStock.insert();
-					lineitem.u_item = newSysId;
-					lineitem.update();
+					// var newSysId = newStock.insert();
+					lineitem.u_item = parent.sys_id;
+					console.log('lineitem.u_item  - ' + lineitem.u_item);
+					// lineitem.update();
 
 					orderCounter += 100;
 				});

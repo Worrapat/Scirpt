@@ -1,0 +1,4 @@
+https://ptteptest.service-now.com/$sp.do?id=sp-preview&sys_id=223b1097db1e3910d63d06a5f396199d
+https://ptteptest.service-now.com/sp_config?id=widget-sc-cat-item-v4
+https://ptteptest.service-now.com/sp?id=widget-sc-cat-item-v4
+https://ptteptest.service-now.com/esc?id=widget-sc-cat-item-v4

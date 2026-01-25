@@ -1,0 +1,425 @@
+{
+    "instance": {
+        "name": "eservicedev",
+        "url": "https://eservicedev.service-now.com",
+        "g_ck": "00af1e94975eba100d537bee2153af00435cea3f1b000033fb362109f45e7e43429c106d"
+    },
+    "action": "saveWidget",
+    "tableName": "sp_widget",
+    "name": "Dashboard",
+    "sys_id": "4ff8d0aa973db2100d537bee2153af5f",
+    "widget": {
+        "template": {
+            "sys_mandatory": false,
+            "visible": true,
+            "dbType": 12,
+            "label": "Body HTML template",
+            "sys_readonly": false,
+            "type": "html_template",
+            "mandatory": false,
+            "displayValue": "<div class=\"panel panel-default\">\n\t<div class=\"panel-body\">\n\t\t<div id=\"incidentChart\" style=\"height: 400px\"></div>\n\t</div>\n</div>\n",
+            "readonly": false,
+            "hint": "",
+            "name": "template",
+            "attributes": {},
+            "choice": 0,
+            "value": "<div class=\"panel panel-default\">\n\t<div class=\"panel-body\">\n\t\t<div id=\"incidentChart\" style=\"height: 400px\"></div>\n\t</div>\n</div>\n",
+            "max_length": 65000,
+            "ed": {
+                "name": "template"
+            }
+        },
+        "css": {
+            "sys_mandatory": false,
+            "visible": true,
+            "dbType": 12,
+            "label": "CSS",
+            "sys_readonly": false,
+            "type": "css",
+            "mandatory": false,
+            "displayValue": "",
+            "readonly": false,
+            "hint": "",
+            "name": "css",
+            "attributes": {},
+            "choice": 0,
+            "value": "",
+            "max_length": 8000,
+            "ed": {
+                "name": "css"
+            }
+        },
+        "roles": {
+            "sys_mandatory": false,
+            "visible": true,
+            "dbType": 12,
+            "label": "Roles",
+            "sys_readonly": false,
+            "type": "user_roles",
+            "mandatory": false,
+            "displayValue": "",
+            "readonly": false,
+            "hint": "",
+            "name": "roles",
+            "attributes": {
+                "no_truncate": "true",
+                "update_exempt": "true",
+                "record_watcher_blacklist": "true"
+            },
+            "choice": 0,
+            "value": "",
+            "max_length": 255,
+            "ed": {
+                "name": "roles"
+            }
+        },
+        "link": {
+            "sys_mandatory": false,
+            "visible": true,
+            "dbType": 12,
+            "label": "Link",
+            "sys_readonly": false,
+            "type": "script",
+            "mandatory": false,
+            "displayValue": "function link(scope, element, attrs, controller) {\n  \n}",
+            "readonly": false,
+            "hint": "",
+            "name": "link",
+            "attributes": {
+                "client_script": "true"
+            },
+            "choice": 0,
+            "value": "function link(scope, element, attrs, controller) {\n  \n}",
+            "max_length": 65000,
+            "ed": {
+                "name": "link"
+            }
+        },
+        "description": {
+            "sys_mandatory": false,
+            "visible": true,
+            "dbType": 12,
+            "label": "Description",
+            "sys_readonly": false,
+            "type": "string",
+            "mandatory": false,
+            "displayValue": "",
+            "readonly": false,
+            "hint": "Defines what the widget does",
+            "name": "description",
+            "attributes": {
+                "edge_encryption_enabled": "true"
+            },
+            "choice": 0,
+            "value": "",
+            "max_length": 300,
+            "ed": {
+                "name": "description"
+            }
+        },
+        "demo_data": {
+            "sys_mandatory": false,
+            "visible": true,
+            "dbType": 12,
+            "label": "Demo data",
+            "sys_readonly": false,
+            "type": "json",
+            "mandatory": false,
+            "displayValue": "",
+            "readonly": false,
+            "hint": "",
+            "name": "demo_data",
+            "attributes": {},
+            "choice": 0,
+            "value": "",
+            "max_length": 8000,
+            "ed": {
+                "name": "demo_data"
+            }
+        },
+        "option_schema": {
+            "sys_mandatory": false,
+            "visible": true,
+            "dbType": 12,
+            "label": "Option schema",
+            "sys_readonly": false,
+            "type": "json",
+            "mandatory": false,
+            "displayValue": "[\r\n  {\r\n    \"name\": \"table\",\r\n    \"label\": \"Table\",\r\n    \"type\": \"string\",\r\n    \"default_value\": \"incident\",\r\n    \"section\": \"Data\"\r\n  },\r\n  {\r\n    \"name\": \"group_by\",\r\n    \"label\": \"Group By Field\",\r\n    \"type\": \"string\",\r\n    \"default_value\": \"state\",\r\n    \"section\": \"Data\"\r\n  },\r\n  {\r\n    \"name\": \"date_field\",\r\n    \"label\": \"Date Field\",\r\n    \"type\": \"string\",\r\n    \"default_value\": \"sys_created_on\",\r\n    \"section\": \"Data\"\r\n  },\r\n  {\r\n    \"name\": \"encoded_query\",\r\n    \"label\": \"Encoded Query\",\r\n    \"type\": \"string\",\r\n    \"section\": \"Data\"\r\n  },\r\n  {\r\n    \"name\": \"interval\",\r\n    \"label\": \"Interval\",\r\n    \"type\": \"choice\",\r\n    \"choices\": [\r\n      { \"label\": \"Month\", \"value\": \"month\" },\r\n      { \"label\": \"Quarter\", \"value\": \"quarter\" },\r\n      { \"label\": \"Year\", \"value\": \"year\" }\r\n    ],\r\n    \"default_value\": \"month\",\r\n    \"section\": \"Chart\"\r\n  },\r\n  {\r\n    \"name\": \"chart_type\",\r\n    \"label\": \"Chart Type\",\r\n    \"type\": \"choice\",\r\n    \"choices\": [\r\n      { \"label\": \"Bar\", \"value\": \"bar\" },\r\n      { \"label\": \"Column\", \"value\": \"column\" },\r\n      { \"label\": \"Line\", \"value\": \"line\" }\r\n    ],\r\n    \"default_value\": \"column\",\r\n    \"section\": \"Chart\"\r\n  },\r\n  {\r\n    \"name\": \"title\",\r\n    \"label\": \"Chart Title\",\r\n    \"type\": \"string\",\r\n    \"default_value\": \"Trend Dashboard\",\r\n    \"section\": \"Chart\"\r\n  }\r\n]\r\n",
+            "readonly": false,
+            "hint": "",
+            "name": "option_schema",
+            "attributes": {},
+            "choice": 0,
+            "value": "[\r\n  {\r\n    \"name\": \"table\",\r\n    \"label\": \"Table\",\r\n    \"type\": \"string\",\r\n    \"default_value\": \"incident\",\r\n    \"section\": \"Data\"\r\n  },\r\n  {\r\n    \"name\": \"group_by\",\r\n    \"label\": \"Group By Field\",\r\n    \"type\": \"string\",\r\n    \"default_value\": \"state\",\r\n    \"section\": \"Data\"\r\n  },\r\n  {\r\n    \"name\": \"date_field\",\r\n    \"label\": \"Date Field\",\r\n    \"type\": \"string\",\r\n    \"default_value\": \"sys_created_on\",\r\n    \"section\": \"Data\"\r\n  },\r\n  {\r\n    \"name\": \"encoded_query\",\r\n    \"label\": \"Encoded Query\",\r\n    \"type\": \"string\",\r\n    \"section\": \"Data\"\r\n  },\r\n  {\r\n    \"name\": \"interval\",\r\n    \"label\": \"Interval\",\r\n    \"type\": \"choice\",\r\n    \"choices\": [\r\n      { \"label\": \"Month\", \"value\": \"month\" },\r\n      { \"label\": \"Quarter\", \"value\": \"quarter\" },\r\n      { \"label\": \"Year\", \"value\": \"year\" }\r\n    ],\r\n    \"default_value\": \"month\",\r\n    \"section\": \"Chart\"\r\n  },\r\n  {\r\n    \"name\": \"chart_type\",\r\n    \"label\": \"Chart Type\",\r\n    \"type\": \"choice\",\r\n    \"choices\": [\r\n      { \"label\": \"Bar\", \"value\": \"bar\" },\r\n      { \"label\": \"Column\", \"value\": \"column\" },\r\n      { \"label\": \"Line\", \"value\": \"line\" }\r\n    ],\r\n    \"default_value\": \"column\",\r\n    \"section\": \"Chart\"\r\n  },\r\n  {\r\n    \"name\": \"title\",\r\n    \"label\": \"Chart Title\",\r\n    \"type\": \"string\",\r\n    \"default_value\": \"Trend Dashboard\",\r\n    \"section\": \"Chart\"\r\n  }\r\n]\r\n",
+            "max_length": 8000,
+            "ed": {
+                "name": "option_schema"
+            }
+        },
+        "script": {
+            "sys_mandatory": false,
+            "visible": true,
+            "dbType": 12,
+            "label": "Server script",
+            "sys_readonly": false,
+            "type": "script",
+            "mandatory": false,
+            "displayValue": "(function () {\n\tdata.categories = [];\n\tdata.series = [];\n\n\tvar table = options.table;\n\tvar groupBy = options.group_by;\n\tvar dateField = options.date_field;\n\tvar interval = options.interval;\n\tvar query = options.encoded_query;\n\n\tif (!table || !groupBy || !dateField) return;\n\n\tvar ga = new GlideAggregate(table);\n\tga.addAggregate('COUNT');\n\tga.groupBy(groupBy);\n\tga.addTrend(dateField, interval);\n\n\tif (query) ga.addEncodedQuery(query);\n\n\tga.query();\n\n\tvar buckets = [];\n\tvar matrix = {};\n\n\twhile (ga.next()) {\n\t\tvar groupValue = ga.getDisplayValue(groupBy);\n\t\tvar time = ga.getValue('timeref');\n\t\tvar count = parseInt(ga.getAggregate('COUNT'), 10);\n\n\t\tif (buckets.indexOf(time) === -1) buckets.push(time);\n\n\t\tif (!matrix[groupValue]) matrix[groupValue] = {};\n\n\t\tmatrix[groupValue][time] = count;\n\t}\n\n\tdata.categories = buckets.sort();\n\n\tfor (var key in matrix) {\n\t\tvar row = { name: key, data: [] };\n\t\tdata.categories.forEach(function (b) {\n\t\t\trow.data.push(matrix[key][b] || 0);\n\t\t});\n\t\tdata.series.push(row);\n\t}\n})();\n",
+            "readonly": false,
+            "hint": "",
+            "name": "script",
+            "attributes": {},
+            "choice": 0,
+            "value": "(function () {\n\tdata.categories = [];\n\tdata.series = [];\n\n\tvar table = options.table;\n\tvar groupBy = options.group_by;\n\tvar dateField = options.date_field;\n\tvar interval = options.interval;\n\tvar query = options.encoded_query;\n\n\tif (!table || !groupBy || !dateField) return;\n\n\tvar ga = new GlideAggregate(table);\n\tga.addAggregate('COUNT');\n\tga.groupBy(groupBy);\n\tga.addTrend(dateField, interval);\n\n\tif (query) ga.addEncodedQuery(query);\n\n\tga.query();\n\n\tvar buckets = [];\n\tvar matrix = {};\n\n\twhile (ga.next()) {\n\t\tvar groupValue = ga.getDisplayValue(groupBy);\n\t\tvar time = ga.getValue('timeref');\n\t\tvar count = parseInt(ga.getAggregate('COUNT'), 10);\n\n\t\tif (buckets.indexOf(time) === -1) buckets.push(time);\n\n\t\tif (!matrix[groupValue]) matrix[groupValue] = {};\n\n\t\tmatrix[groupValue][time] = count;\n\t}\n\n\tdata.categories = buckets.sort();\n\n\tfor (var key in matrix) {\n\t\tvar row = { name: key, data: [] };\n\t\tdata.categories.forEach(function (b) {\n\t\t\trow.data.push(matrix[key][b] || 0);\n\t\t});\n\t\tdata.series.push(row);\n\t}\n})();\n",
+            "max_length": 65000,
+            "ed": {
+                "name": "script"
+            }
+        },
+        "has_preview": {
+            "sys_mandatory": false,
+            "visible": true,
+            "dbType": -7,
+            "label": "Has preview",
+            "sys_readonly": false,
+            "type": "boolean",
+            "mandatory": false,
+            "displayValue": "true",
+            "readonly": false,
+            "hint": "Defines whether preview data is available",
+            "name": "has_preview",
+            "attributes": {},
+            "choice": 0,
+            "value": "true",
+            "max_length": 40,
+            "ed": {
+                "name": "has_preview"
+            }
+        },
+        "public": {
+            "sys_mandatory": false,
+            "visible": true,
+            "dbType": -7,
+            "label": "Public",
+            "sys_readonly": false,
+            "type": "boolean",
+            "mandatory": false,
+            "displayValue": "false",
+            "readonly": false,
+            "hint": "Widget publicly available to unauthenticated users",
+            "name": "public",
+            "attributes": {
+                "update_exempt": "true"
+            },
+            "choice": 0,
+            "value": "false",
+            "max_length": 40,
+            "ed": {
+                "name": "public"
+            }
+        },
+        "docs": {
+            "sys_mandatory": false,
+            "visible": true,
+            "table_attributes": {
+                "update_synch": "true",
+                "synch_attachments": "true"
+            },
+            "dbType": 12,
+            "label": "Docs",
+            "sys_readonly": false,
+            "type": "reference",
+            "mandatory": false,
+            "refTable": "sp_documentation",
+            "reference_type": "table",
+            "displayValue": "",
+            "readonly": false,
+            "hint": "",
+            "name": "docs",
+            "attributes": {
+                "encode_utf8": "false"
+            },
+            "reference_key": "sys_id",
+            "readonlyClickthrough": false,
+            "choice": 0,
+            "value": "",
+            "max_length": 32,
+            "ed": {
+                "reference": "sp_documentation",
+                "searchField": "title",
+                "defaultOperator": "STARTSWITH",
+                "name": "docs"
+            }
+        },
+        "client_script": {
+            "sys_mandatory": false,
+            "visible": true,
+            "dbType": 12,
+            "label": "Client controller",
+            "sys_readonly": false,
+            "type": "script",
+            "mandatory": false,
+            "displayValue": "api.controller = function ($scope, $timeout) {\n\tvar c = this;\n\n\tfunction render() {\n\t\tif (!c.data.series || !c.data.series.length) return;\n\n\t\t$timeout(function () {\n\t\t\tHighcharts.chart('incidentChart', {\n\t\t\t\tchart: { type: c.options.chart_type },\n\t\t\t\ttitle: { text: c.options.title },\n\t\t\t\txAxis: { categories: c.data.categories },\n\t\t\t\tyAxis: { title: { text: 'Count' } },\n\t\t\t\tplotOptions: {\n\t\t\t\t\tseries: { stacking: 'normal' },\n\t\t\t\t},\n\t\t\t\tseries: c.data.series,\n\t\t\t});\n\t\t});\n\t}\n\n\t$scope.$watch('c.data.series', render, true);\n};\n",
+            "readonly": false,
+            "hint": "",
+            "name": "client_script",
+            "attributes": {
+                "client_script": "true"
+            },
+            "choice": 0,
+            "value": "api.controller = function ($scope, $timeout) {\n\tvar c = this;\n\n\tfunction render() {\n\t\tif (!c.data.series || !c.data.series.length) return;\n\n\t\t$timeout(function () {\n\t\t\tHighcharts.chart('incidentChart', {\n\t\t\t\tchart: { type: c.options.chart_type },\n\t\t\t\ttitle: { text: c.options.title },\n\t\t\t\txAxis: { categories: c.data.categories },\n\t\t\t\tyAxis: { title: { text: 'Count' } },\n\t\t\t\tplotOptions: {\n\t\t\t\t\tseries: { stacking: 'normal' },\n\t\t\t\t},\n\t\t\t\tseries: c.data.series,\n\t\t\t});\n\t\t});\n\t}\n\n\t$scope.$watch('c.data.series', render, true);\n};\n",
+            "max_length": 8000,
+            "ed": {
+                "name": "client_script"
+            }
+        },
+        "data_table": {
+            "sys_mandatory": true,
+            "visible": true,
+            "dbType": 12,
+            "default_value": "sp_instance",
+            "label": "Data table",
+            "sys_readonly": false,
+            "type": "table_name",
+            "mandatory": true,
+            "displayValue": "sp_instance",
+            "readonly": false,
+            "hint": "",
+            "name": "data_table",
+            "attributes": {
+                "base_table": "sp_instance",
+                "base_start": "true"
+            },
+            "choice": 0,
+            "choices": [],
+            "value": "sp_instance",
+            "max_length": 80,
+            "ed": {
+                "name": "data_table"
+            }
+        },
+        "name": {
+            "sys_mandatory": true,
+            "visible": true,
+            "dbType": 12,
+            "label": "Name",
+            "sys_readonly": false,
+            "type": "translated_field",
+            "mandatory": true,
+            "displayValue": "Dashboard",
+            "readonly": false,
+            "hint": "",
+            "name": "name",
+            "attributes": {},
+            "choice": 0,
+            "value": "Dashboard",
+            "max_length": 40,
+            "ed": {
+                "name": "name"
+            }
+        },
+        "sys_scope": {
+            "sys_mandatory": false,
+            "visible": true,
+            "table_attributes": {
+                "metadata_link_exempt": "true"
+            },
+            "dbType": 12,
+            "label": "Application",
+            "sys_readonly": true,
+            "type": "reference",
+            "mandatory": false,
+            "refTable": "sys_scope",
+            "reference_type": "table",
+            "displayValue": "Global",
+            "readonly": true,
+            "hint": "Application containing this record",
+            "name": "sys_scope",
+            "attributes": {
+                "list_force_default": "true",
+                "readonly_clickthrough": "true",
+                "ignore_filter_on_new": "true"
+            },
+            "reference_key": "sys_id",
+            "readonlyClickthrough": true,
+            "choice": 0,
+            "value": "global",
+            "max_length": 32,
+            "ed": {
+                "reference": "sys_scope",
+                "searchField": "name",
+                "defaultOperator": "STARTSWITH",
+                "name": "sys_scope"
+            }
+        },
+        "id": {
+            "sys_mandatory": false,
+            "visible": true,
+            "dbType": 12,
+            "label": "ID",
+            "sys_readonly": false,
+            "type": "string",
+            "mandatory": false,
+            "displayValue": "dashboard",
+            "readonly": false,
+            "hint": "Identifier for $sp.embedWidget()",
+            "name": "id",
+            "attributes": {
+                "edge_encryption_enabled": "true"
+            },
+            "choice": 0,
+            "value": "dashboard",
+            "max_length": 40,
+            "ed": {
+                "name": "id"
+            }
+        },
+        "field_list": {
+            "sys_mandatory": false,
+            "visible": true,
+            "dependentField": "data_table",
+            "dbType": 12,
+            "label": "Fields",
+            "sys_readonly": false,
+            "type": "field_list",
+            "mandatory": false,
+            "displayValue": "",
+            "readonly": false,
+            "hint": "",
+            "name": "field_list",
+            "attributes": {
+                "is_multi_text": "false"
+            },
+            "choice": 0,
+            "value": "",
+            "max_length": 1000,
+            "ed": {
+                "dependent_value": "sp_instance",
+                "name": "field_list"
+            }
+        },
+        "controller_as": {
+            "sys_mandatory": false,
+            "visible": true,
+            "dbType": 12,
+            "label": "controllerAs",
+            "sys_readonly": false,
+            "type": "string",
+            "mandatory": false,
+            "displayValue": "c",
+            "readonly": false,
+            "hint": "Identifier name for a reference to the controller in the directive's scope",
+            "name": "controller_as",
+            "attributes": {
+                "edge_encryption_enabled": "true"
+            },
+            "choice": 0,
+            "value": "c",
+            "max_length": 100,
+            "ed": {
+                "name": "controller_as"
+            }
+        }
+    }
+}

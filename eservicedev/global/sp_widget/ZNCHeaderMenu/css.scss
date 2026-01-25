@@ -1,0 +1,139 @@
+.header-loader {
+	float: left;
+	width: 24px;
+	position: relative;
+	top: 24px;
+}
+
+.cart-dropdown,
+.wishlist-menu,
+.gtd-dropdown-container .empty-dropdown {
+	width: 350px;
+	padding: 0;
+	z-index: 1000;
+	border-top-left-radius: 4px !important;
+	border-top-right-radius: 4px !important;
+
+	ul {
+		max-height: 300px;
+		overflow: auto;
+	}
+
+	.subtotal {
+		display: block;
+	}
+
+	.item-image {
+		padding: 0;
+		margin: 0;
+		text-align: center;
+		max-width: 100%;
+		height: auto;
+	}
+	label,
+	p {
+		padding: 0;
+		margin: 0;
+	}
+	.media {
+		padding: 0;
+		margin: 0;
+	}
+	.media-left > a {
+		display: block;
+		width: 48px;
+		max-width: 48px;
+	}
+	.media-body {
+		label {
+			font-weight: bold;
+		}
+	}
+	li.media {
+		border-top: 1px solid #cccccc;
+		padding: $header-menu-item-padding;
+	}
+	.panel {
+		margin: 0;
+	}
+	.panel .panel-body {
+		padding: 0;
+	}
+	.btn-clear {
+		color: #333;
+		background-color: #fff;
+	}
+	p.quantity-price {
+		padding-top: 0.5rem;
+		span {
+			color: $text-muted;
+			padding-right: 0.5rem;
+			unicode-bidi: isolate;
+		}
+	}
+	.align-right {
+		text-align: right;
+	}
+}
+
+.item-added-tooltip,
+wishlist-item-added-tooltip {
+	width: 184px;
+	font-size: 14px;
+}
+
+.open > .dropdown-menu {
+	padding: 0.5rem 0.2rem !important;
+}
+
+.gtd-dropdown-container {
+	.empty-tour-content {
+		text-align: center;
+		margin: 40px 20px;
+	}
+	.dropdown-menu li {
+		a {
+			cursor: pointer;
+		}
+		min-width: 20em;
+	}
+	.label-as-badge {
+		width: 12px;
+		height: 12px;
+		display: inline-block;
+		padding: 0px;
+		padding-top: 2px;
+	}
+	.badge-container {
+		display: inline-block;
+		width: 12px;
+	}
+	.end-tour-menu {
+		width: 300px;
+		background-color: #fff;
+		.end-tour-body {
+			display: flex;
+			flex-flow: column;
+			margin: 5px;
+			row-gap: 8px;
+		}
+		.end-tour-name {
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+	}
+}
+
+@media (max-width: 845px) and (min-width: 768px) {
+	.header-menu-item ul {
+		right: auto;
+		left: auto;
+	}
+}
+@media (max-width: 767px) {
+	.empty-dropdown,
+	.end-tour-menu {
+		width: auto !important;
+	}
+}

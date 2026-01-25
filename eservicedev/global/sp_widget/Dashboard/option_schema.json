@@ -1,0 +1,60 @@
+[
+  {
+    "name": "table",
+    "label": "Table",
+    "type": "string",
+    "default_value": "incident",
+    "section": "Data"
+  },
+  {
+    "name": "group_by",
+    "label": "Group By Field",
+    "type": "string",
+    "default_value": "state",
+    "section": "Data"
+  },
+  {
+    "name": "date_field",
+    "label": "Date Field",
+    "type": "string",
+    "default_value": "sys_created_on",
+    "section": "Data"
+  },
+  {
+    "name": "encoded_query",
+    "label": "Encoded Query",
+    "type": "string",
+    "section": "Data"
+  },
+  {
+    "name": "interval",
+    "label": "Interval",
+    "type": "choice",
+    "choices": [
+      { "label": "Month", "value": "month" },
+      { "label": "Quarter", "value": "quarter" },
+      { "label": "Year", "value": "year" }
+    ],
+    "default_value": "month",
+    "section": "Chart"
+  },
+  {
+    "name": "chart_type",
+    "label": "Chart Type",
+    "type": "choice",
+    "choices": [
+      { "label": "Bar", "value": "bar" },
+      { "label": "Column", "value": "column" },
+      { "label": "Line", "value": "line" }
+    ],
+    "default_value": "column",
+    "section": "Chart"
+  },
+  {
+    "name": "title",
+    "label": "Chart Title",
+    "type": "string",
+    "default_value": "Trend Dashboard",
+    "section": "Chart"
+  }
+]

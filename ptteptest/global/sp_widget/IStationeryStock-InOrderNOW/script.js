@@ -1,6 +1,6 @@
 (function () {
 	var arr = [];
-	console.log('input.action : ' + input.action);
+	// console.log('input.action : ' + input.action);
 	// First Time Load
 	if (input.action == 'referencevalue' && input.filterData != '') {
 		var userGR = new GlideRecord('sys_user');
@@ -19,7 +19,6 @@
 				'^ORu_groupDYNAMICd6435e965f510100a9ad2572f2b47744',
 		);
 		checkItem.query();
-		// console.log('checkItem count: ' + checkItem.getEncodedQuery());
 
 		var arrAllowed = []; // items allowed for this user
 
@@ -31,9 +30,6 @@
 		var arrayUtil = new ArrayUtil();
 		var finalItems = arrayUtil.unique(arrAllowed);
 
-		// console.log('finalItems : ' + finalItems);
-		// console.log('input.budget_holder : ' + input.budget_holder);
-
 		var master_item = new GlideRecord('u_istationery_stock_in');
 		master_item.addQuery('u_master_item_name.sys_id', 'IN', finalItems);
 		master_item.addQuery('u_budget_holder.u_budget_holder', input.budget_holder);
@@ -42,8 +38,6 @@
 		master_item.addQuery('active', true);
 		master_item.orderBy('name');
 		master_item.query();
-
-		// console.log('master_item count: ' + master_item.getEncodedQuery());
 
 		while (master_item.next()) {
 			// console.log('master_item: ' + master_item.getRowCount());
@@ -62,7 +56,8 @@
 
 			var obj = {
 				photo1: img,
-				description: master_item.u_master_item_name.u_name.getValue('name'),
+				// description: master_item.u_master_item_name.u_name.getValue('name'),
+				description: master_item.getValue('name'),
 				unit_type: master_item.u_stock_in_unit.getDisplayValue(),
 				unit_price: parseFloat(master_item.getValue('u_stock_in_unit_cost'))
 					.toFixed(2)
@@ -113,8 +108,8 @@
 
 				var objPreview = {
 					photo1: imgPreview,
-					// description: ms_item.getValue('name'),
-					description: ms_item.u_master_item_name.u_name.getValue('name'),
+					description: ms_item.getValue('name'),
+					// description: ms_item.u_master_item_name.u_name.getValue('name'),
 					unit_type: ms_item.u_stock_in_unit.getDisplayValue(),
 					unit_price: parseFloat(ms_item.getValue('u_stock_in_unit_cost'))
 						.toFixed(2)
@@ -231,6 +226,8 @@
 			}
 		}
 		data.oldArr = oldArr;
+
+		// console.log(JSON.stringify(data.oldArr));
 	} else if (input.action == 'previewUpdate') {
 		var oldArr = input.oldArr;
 		var newArr = input.newArr;
@@ -280,17 +277,17 @@
 			grItem.query();
 			while (grItem.next()) {
 				var result = checkUseCase(grItem);
-				console.log('result[checkUseCase] - ' + JSON.stringify(result));
 				results.push({
 					description: id,
 					name: grItem.getValue('name'),
 					uc_code: result.ucCode,
 					u_unit_price: result.u_unit_price,
+					stock_in_unit_cost: grItem.getValue('u_stock_in_unit_cost'),
 					u_stock_in_unit: grItem.getDisplayValue('u_stock_in_unit'),
 					oldPrice: result.u_unit_price,
 					editable: result.editable,
 				});
-				console.log('results - ' + JSON.stringify(results));
+				// console.log('results - ' + JSON.stringify(results));
 			}
 		});
 
@@ -332,7 +329,10 @@
 			var item = items[0];
 			if (item.active) {
 				gs.log(item.itemName + ' : ' + item.credit_available);
-				return { ucCode: item.credit_available === 0 ? 'UC-001' : 'UC-002', editable: true };
+				return {
+					ucCode: item.credit_available === 0 ? 'UC-001' : 'UC-002',
+					editable: true,
+				};
 			} else {
 				return { ucCode: 'Out of case', editable: false };
 			}
@@ -341,13 +341,10 @@
 			var hasInactiveCreditMore = false;
 			var allActive = true;
 			var outOfcase = false;
-			// console.log('items - ' + JSON.stringify(items));
 
 			var checkParentItem = checkParent(items);
-			// console.log('checkParentItem - ' + JSON.stringify(checkParentItem));
 			if (checkParentItem.hasParent == true) {
 				if (checkParentItem.countActive > 1) {
-					// console.log(it.itemName + ' : ' + checkParentItem.countActive + ' : ');
 					return { ucCode: 'UC-007', editable: false };
 				}
 			}

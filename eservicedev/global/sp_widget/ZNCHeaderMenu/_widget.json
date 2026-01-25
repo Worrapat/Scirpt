@@ -1,0 +1,425 @@
+{
+    "instance": {
+        "name": "eservicedev",
+        "url": "https://eservicedev.service-now.com",
+        "g_ck": "74d9714147427210dd36aa04836d433966a498e09ae9c22c1696b4f85779b0999fdcbc85"
+    },
+    "action": "saveWidget",
+    "tableName": "sp_widget",
+    "name": "ZNC Header Menu",
+    "sys_id": "7e0e1e8947827210dd36aa04836d436b",
+    "widget": {
+        "template": {
+            "sys_mandatory": false,
+            "visible": true,
+            "dbType": 12,
+            "label": "Body HTML template",
+            "sys_readonly": false,
+            "type": "html_template",
+            "mandatory": false,
+            "displayValue": "<ul class=\"nav navbar-nav\" aria-label=\"${Header}\">\n\t<div class=\"header-loader\" ng-class=\"{'invisible': !loadingIndicator}\">\n\t\t<div class=\"hidden-xs hidden-sm sp-loading-indicator la-sm\">\n\t\t\t<div></div>\n\t\t\t<div></div>\n\t\t\t<div></div>\n\t\t</div>\n\t</div>\n\t<li\n\t\tng-repeat=\"item in visibleItems\"\n\t\tng-class=\"{dropdown: item.items.length > 0, 'header-menu-item': true}\"\n\t\tng-include=\"'suMenuTemplate'\"></li>\n\t<!-- Wishlist menu -->\n\t<li\n\t\tng-if=\"options.enable_wishlist && data.isLoggedIn && data.showWishlist\"\n\t\tng-show=\"!accessibilityEnabled\"\n\t\tid=\"wishlist-menu-wrapper\"\n\t\tclass=\"dropdown hidden-xs header-menu-item\">\n\t\t<a\n\t\t\trole=\"button\"\n\t\t\thref=\"javascript:void(0)\"\n\t\t\tdata-toggle=\"dropdown\"\n\t\t\tid=\"wishlist-menu\"\n\t\t\tdata-placement=\"bottom\"\n\t\t\tdata-original-title=\"${Your Wish List currently has} {{wishlistItemCount}} ${items}\"\n\t\t\taria-label=\"${Wish List}\">\n\t\t\t<span ng-bind-html=\"'${Wish List}'\" aria-hidden=\"true\"></span>\n\t\t\t<span\n\t\t\t\tng-if=\"wishlistItemCount > 0\"\n\t\t\t\taria-hidden=\"true\"\n\t\t\t\tclass=\"label label-as-badge label-primary sp-navbar-badge-count\">\n\t\t\t\t{{wishlistItemCount}}\n\t\t\t</span>\n\t\t</a>\n\t\t<div class=\"dropdown-menu wishlist-menu custom-drop-down\">\n\t\t\t<sp-widget widget=\"data.wishlistWidget\"></sp-widget>\n\t\t</div>\n\t</li>\n\t<li\n\t\tng-if=\"options.enable_wishlist && data.isLoggedIn && data.showWishlist\"\n\t\tclass=\"dropdown\"\n\t\tng-class=\"{'visible-xs': !accessibilityEnabled}\">\n\t\t<a\n\t\t\thref=\"?id=sc_draftlist\"\n\t\t\ttitle=\"${Your Wish List currently has} {{wishlistItemCount}} ${items}\"\n\t\t\tdata-toggle=\"tooltip\"\n\t\t\tdata-placement=\"bottom\"\n\t\t\tclass=\"toggle-dropdown\"\n\t\t\trole=\"button\"\n\t\t\taria-label=\"${Your Wish List currently has} {{wishlistItemCount}} ${items}\">\n\t\t\t<span ng-bind-html=\"'${Wish List}'\" aria-hidden=\"true\"></span>\n\t\t\t<span\n\t\t\t\tng-if=\"wishlistItemCount > 0\"\n\t\t\t\taria-hidden=\"true\"\n\t\t\t\tclass=\"label label-as-badge label-primary sp-navbar-badge-count\">\n\t\t\t\t{{wishlistItemCount}}\n\t\t\t</span>\n\t\t</a>\n\t</li>\n\t<!-- Shopping cart stuff -->\n\t<li\n\t\tng-if=\"::options.enable_cart && data.isLoggedIn\"\n\t\tng-show=\"!accessibilityEnabled\"\n\t\tid=\"cart-dropdown-wrapper\"\n\t\tclass=\"dropdown hidden-xs header-menu-item\">\n\t\t<a\n\t\t\thref\n\t\t\tdata-toggle=\"dropdown\"\n\t\t\tid=\"cart-dropdown\"\n\t\t\tdata-placement=\"bottom\"\n\t\t\tdata-original-title=\"${Your shopping cart currently has} {{cartItemCount}} ${items}\"\n\t\t\taria-label=\"${Shopping cart}\"\n\t\t\trole=\"button\">\n\t\t\t<i class=\"fa fa-shopping-cart\" aria-hidden=\"true\"></i>\n\t\t\t<span ng-bind-html=\"'${Cart}'\" aria-hidden=\"true\"></span>\n\t\t\t<span\n\t\t\t\tng-if=\"cartItemCount > 0\"\n\t\t\t\taria-hidden=\"true\"\n\t\t\t\tclass=\"label label-as-badge label-primary sp-navbar-badge-count\">\n\t\t\t\t{{cartItemCount}}\n\t\t\t</span>\n\t\t</a>\n\t\t<div class=\"dropdown-menu cart-dropdown custom-drop-down\">\n\t\t\t<sp-widget widget=\"data.cartWidget\"></sp-widget>\n\t\t</div>\n\t</li>\n\t<li\n\t\tng-if=\"::options.enable_cart && data.isLoggedIn\"\n\t\tclass=\"header-menu-item\"\n\t\tng-class=\"::{'visible-xs': !accessibilityEnabled}\">\n\t\t<a\n\t\t\tng-href=\"?id=sc_cart\"\n\t\t\tng-click=\"collapse()\"\n\t\t\tdata-toggle=\"tooltip\"\n\t\t\tdata-placement=\"bottom\"\n\t\t\tdata-original-title=\"${Your shopping cart currently has} {{cartItemCount}} ${items}\"\n\t\t\tclass=\"toggle-dropdown\"\n\t\t\taria-label=\"${Your shopping cart currently has} {{cartItemCount}} ${items}\">\n\t\t\t<i class=\"fa fa-shopping-cart\" aria-hidden=\"true\"></i>\n\t\t\t<span ng-bind-html=\"'${Cart}'\" aria-hidden=\"true\"></span>\n\t\t\t<span\n\t\t\t\tng-if=\"cartItemCount > 0\"\n\t\t\t\taria-hidden=\"true\"\n\t\t\t\tclass=\"label label-as-badge label-primary sp-navbar-badge-count\">\n\t\t\t\t{{cartItemCount}}\n\t\t\t</span>\n\t\t</a>\n\t</li>\n\t<li\n\t\tng-if=\"data.isLoggedIn && data.guidedTours && !isMobile\"\n\t\tclass=\"dropdown header-menu-item gtd-dropdown-container\">\n\t\t<a\n\t\t\thref\n\t\t\tdata-toggle=\"dropdown\"\n\t\t\tid=\"tour-dropdown\"\n\t\t\tdata-placement=\"bottom\"\n\t\t\tdata-toggle-second=\"tooltip\"\n\t\t\tng-click=\"toggleTours()\"\n\t\t\tng-blur=\"onToursItemBlur()\"\n\t\t\tdata-original-title=\"{{tooltipTours}}\"\n\t\t\taria-label=\"{{data.guidedTours.label}}\"\n\t\t\trole=\"button\">\n\t\t\t<span ng-bind-html=\"'${Tours}'\" aria-hidden=\"true\"></span>\n\t\t\t<span class=\"badge-container\" ng-if=\"data.guidedTours.collection.length > 0\">\n\t\t\t\t<span aria-hidden=\"true\" class=\"label label-as-badge label-primary sp-navbar-badge-count\">\n\t\t\t\t\t&nbsp;\n\t\t\t\t</span>\n\t\t\t</span>\n\t\t</a>\n\t\t<div\n\t\t\tng-if=\"data.guidedTours.collection.length < 1 && !currentTour\"\n\t\t\tclass=\"dropdown-menu empty-dropdown\">\n\t\t\t<div class=\"panel ng-scope\">\n\t\t\t\t<div class=\"panel-body\">\n\t\t\t\t\t<div class=\"empty-tour-content\" role=\"alert\">\n\t\t\t\t\t\t<h4>${You have no tours on this page}</h4>\n\t\t\t\t\t\t<p>${Tours appear when your administrator creates them on specific pages}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<ul\n\t\t\tng-if=\"data.guidedTours.collection.length > 0 && !currentTour\"\n\t\t\tclass=\"dropdown-menu\"\n\t\t\trole=\"menu\"\n\t\t\taria-label=\"${Tours}\">\n\t\t\t<li ng-repeat=\"mi in data.guidedTours.collection\" class=\"ng-scope dropdown-menu-line\">\n\t\t\t\t<a\n\t\t\t\t\trole=\"button\"\n\t\t\t\t\thref\n\t\t\t\t\ttitle=\"{{::mi.title}}\"\n\t\t\t\t\ttarget=\"{{::mi.target}}\"\n\t\t\t\t\tng-click=\"mi.clicked()\">\n\t\t\t\t\t{{::mi.title | characters:60}}\n\t\t\t\t</a>\n\t\t\t</li>\n\t\t</ul>\n\t\t<div\n\t\t\tng-if=\"currentTour\"\n\t\t\ttabindex=\"0\"\n\t\t\tclass=\"dropdown-menu end-tour-menu\"\n\t\t\taria-label=\"${End Current Tour}: {{currentTour.name}}\">\n\t\t\t<div class=\"end-tour-body ng-scope\">\n\t\t\t\t<a\n\t\t\t\t\ttype=\"button\"\n\t\t\t\t\tclass=\"btn btn-primary\"\n\t\t\t\t\ttabindex=\"0\"\n\t\t\t\t\tng-click=\"endTour()\"\n\t\t\t\t\tng-keydown=\"endTourByKeyDown($event)\">\n\t\t\t\t\t${End Tour}\n\t\t\t\t</a>\n\t\t\t\t<p class=\"end-tour-name\" title=\"{{currentTour.name}}\">\n\t\t\t\t\t${Current Tour}: {{currentTour.name}}\n\t\t\t\t</p>\n\t\t\t</div>\n\t\t</div>\n\t</li>\n</ul>\n",
+            "readonly": false,
+            "hint": "",
+            "name": "template",
+            "attributes": {},
+            "choice": 0,
+            "value": "<ul class=\"nav navbar-nav\" aria-label=\"${Header}\">\n\t<div class=\"header-loader\" ng-class=\"{'invisible': !loadingIndicator}\">\n\t\t<div class=\"hidden-xs hidden-sm sp-loading-indicator la-sm\">\n\t\t\t<div></div>\n\t\t\t<div></div>\n\t\t\t<div></div>\n\t\t</div>\n\t</div>\n\t<li\n\t\tng-repeat=\"item in visibleItems\"\n\t\tng-class=\"{dropdown: item.items.length > 0, 'header-menu-item': true}\"\n\t\tng-include=\"'suMenuTemplate'\"></li>\n\t<!-- Wishlist menu -->\n\t<li\n\t\tng-if=\"options.enable_wishlist && data.isLoggedIn && data.showWishlist\"\n\t\tng-show=\"!accessibilityEnabled\"\n\t\tid=\"wishlist-menu-wrapper\"\n\t\tclass=\"dropdown hidden-xs header-menu-item\">\n\t\t<a\n\t\t\trole=\"button\"\n\t\t\thref=\"javascript:void(0)\"\n\t\t\tdata-toggle=\"dropdown\"\n\t\t\tid=\"wishlist-menu\"\n\t\t\tdata-placement=\"bottom\"\n\t\t\tdata-original-title=\"${Your Wish List currently has} {{wishlistItemCount}} ${items}\"\n\t\t\taria-label=\"${Wish List}\">\n\t\t\t<span ng-bind-html=\"'${Wish List}'\" aria-hidden=\"true\"></span>\n\t\t\t<span\n\t\t\t\tng-if=\"wishlistItemCount > 0\"\n\t\t\t\taria-hidden=\"true\"\n\t\t\t\tclass=\"label label-as-badge label-primary sp-navbar-badge-count\">\n\t\t\t\t{{wishlistItemCount}}\n\t\t\t</span>\n\t\t</a>\n\t\t<div class=\"dropdown-menu wishlist-menu custom-drop-down\">\n\t\t\t<sp-widget widget=\"data.wishlistWidget\"></sp-widget>\n\t\t</div>\n\t</li>\n\t<li\n\t\tng-if=\"options.enable_wishlist && data.isLoggedIn && data.showWishlist\"\n\t\tclass=\"dropdown\"\n\t\tng-class=\"{'visible-xs': !accessibilityEnabled}\">\n\t\t<a\n\t\t\thref=\"?id=sc_draftlist\"\n\t\t\ttitle=\"${Your Wish List currently has} {{wishlistItemCount}} ${items}\"\n\t\t\tdata-toggle=\"tooltip\"\n\t\t\tdata-placement=\"bottom\"\n\t\t\tclass=\"toggle-dropdown\"\n\t\t\trole=\"button\"\n\t\t\taria-label=\"${Your Wish List currently has} {{wishlistItemCount}} ${items}\">\n\t\t\t<span ng-bind-html=\"'${Wish List}'\" aria-hidden=\"true\"></span>\n\t\t\t<span\n\t\t\t\tng-if=\"wishlistItemCount > 0\"\n\t\t\t\taria-hidden=\"true\"\n\t\t\t\tclass=\"label label-as-badge label-primary sp-navbar-badge-count\">\n\t\t\t\t{{wishlistItemCount}}\n\t\t\t</span>\n\t\t</a>\n\t</li>\n\t<!-- Shopping cart stuff -->\n\t<li\n\t\tng-if=\"::options.enable_cart && data.isLoggedIn\"\n\t\tng-show=\"!accessibilityEnabled\"\n\t\tid=\"cart-dropdown-wrapper\"\n\t\tclass=\"dropdown hidden-xs header-menu-item\">\n\t\t<a\n\t\t\thref\n\t\t\tdata-toggle=\"dropdown\"\n\t\t\tid=\"cart-dropdown\"\n\t\t\tdata-placement=\"bottom\"\n\t\t\tdata-original-title=\"${Your shopping cart currently has} {{cartItemCount}} ${items}\"\n\t\t\taria-label=\"${Shopping cart}\"\n\t\t\trole=\"button\">\n\t\t\t<i class=\"fa fa-shopping-cart\" aria-hidden=\"true\"></i>\n\t\t\t<span ng-bind-html=\"'${Cart}'\" aria-hidden=\"true\"></span>\n\t\t\t<span\n\t\t\t\tng-if=\"cartItemCount > 0\"\n\t\t\t\taria-hidden=\"true\"\n\t\t\t\tclass=\"label label-as-badge label-primary sp-navbar-badge-count\">\n\t\t\t\t{{cartItemCount}}\n\t\t\t</span>\n\t\t</a>\n\t\t<div class=\"dropdown-menu cart-dropdown custom-drop-down\">\n\t\t\t<sp-widget widget=\"data.cartWidget\"></sp-widget>\n\t\t</div>\n\t</li>\n\t<li\n\t\tng-if=\"::options.enable_cart && data.isLoggedIn\"\n\t\tclass=\"header-menu-item\"\n\t\tng-class=\"::{'visible-xs': !accessibilityEnabled}\">\n\t\t<a\n\t\t\tng-href=\"?id=sc_cart\"\n\t\t\tng-click=\"collapse()\"\n\t\t\tdata-toggle=\"tooltip\"\n\t\t\tdata-placement=\"bottom\"\n\t\t\tdata-original-title=\"${Your shopping cart currently has} {{cartItemCount}} ${items}\"\n\t\t\tclass=\"toggle-dropdown\"\n\t\t\taria-label=\"${Your shopping cart currently has} {{cartItemCount}} ${items}\">\n\t\t\t<i class=\"fa fa-shopping-cart\" aria-hidden=\"true\"></i>\n\t\t\t<span ng-bind-html=\"'${Cart}'\" aria-hidden=\"true\"></span>\n\t\t\t<span\n\t\t\t\tng-if=\"cartItemCount > 0\"\n\t\t\t\taria-hidden=\"true\"\n\t\t\t\tclass=\"label label-as-badge label-primary sp-navbar-badge-count\">\n\t\t\t\t{{cartItemCount}}\n\t\t\t</span>\n\t\t</a>\n\t</li>\n\t<li\n\t\tng-if=\"data.isLoggedIn && data.guidedTours && !isMobile\"\n\t\tclass=\"dropdown header-menu-item gtd-dropdown-container\">\n\t\t<a\n\t\t\thref\n\t\t\tdata-toggle=\"dropdown\"\n\t\t\tid=\"tour-dropdown\"\n\t\t\tdata-placement=\"bottom\"\n\t\t\tdata-toggle-second=\"tooltip\"\n\t\t\tng-click=\"toggleTours()\"\n\t\t\tng-blur=\"onToursItemBlur()\"\n\t\t\tdata-original-title=\"{{tooltipTours}}\"\n\t\t\taria-label=\"{{data.guidedTours.label}}\"\n\t\t\trole=\"button\">\n\t\t\t<span ng-bind-html=\"'${Tours}'\" aria-hidden=\"true\"></span>\n\t\t\t<span class=\"badge-container\" ng-if=\"data.guidedTours.collection.length > 0\">\n\t\t\t\t<span aria-hidden=\"true\" class=\"label label-as-badge label-primary sp-navbar-badge-count\">\n\t\t\t\t\t&nbsp;\n\t\t\t\t</span>\n\t\t\t</span>\n\t\t</a>\n\t\t<div\n\t\t\tng-if=\"data.guidedTours.collection.length < 1 && !currentTour\"\n\t\t\tclass=\"dropdown-menu empty-dropdown\">\n\t\t\t<div class=\"panel ng-scope\">\n\t\t\t\t<div class=\"panel-body\">\n\t\t\t\t\t<div class=\"empty-tour-content\" role=\"alert\">\n\t\t\t\t\t\t<h4>${You have no tours on this page}</h4>\n\t\t\t\t\t\t<p>${Tours appear when your administrator creates them on specific pages}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<ul\n\t\t\tng-if=\"data.guidedTours.collection.length > 0 && !currentTour\"\n\t\t\tclass=\"dropdown-menu\"\n\t\t\trole=\"menu\"\n\t\t\taria-label=\"${Tours}\">\n\t\t\t<li ng-repeat=\"mi in data.guidedTours.collection\" class=\"ng-scope dropdown-menu-line\">\n\t\t\t\t<a\n\t\t\t\t\trole=\"button\"\n\t\t\t\t\thref\n\t\t\t\t\ttitle=\"{{::mi.title}}\"\n\t\t\t\t\ttarget=\"{{::mi.target}}\"\n\t\t\t\t\tng-click=\"mi.clicked()\">\n\t\t\t\t\t{{::mi.title | characters:60}}\n\t\t\t\t</a>\n\t\t\t</li>\n\t\t</ul>\n\t\t<div\n\t\t\tng-if=\"currentTour\"\n\t\t\ttabindex=\"0\"\n\t\t\tclass=\"dropdown-menu end-tour-menu\"\n\t\t\taria-label=\"${End Current Tour}: {{currentTour.name}}\">\n\t\t\t<div class=\"end-tour-body ng-scope\">\n\t\t\t\t<a\n\t\t\t\t\ttype=\"button\"\n\t\t\t\t\tclass=\"btn btn-primary\"\n\t\t\t\t\ttabindex=\"0\"\n\t\t\t\t\tng-click=\"endTour()\"\n\t\t\t\t\tng-keydown=\"endTourByKeyDown($event)\">\n\t\t\t\t\t${End Tour}\n\t\t\t\t</a>\n\t\t\t\t<p class=\"end-tour-name\" title=\"{{currentTour.name}}\">\n\t\t\t\t\t${Current Tour}: {{currentTour.name}}\n\t\t\t\t</p>\n\t\t\t</div>\n\t\t</div>\n\t</li>\n</ul>\n",
+            "max_length": 65000,
+            "ed": {
+                "name": "template"
+            }
+        },
+        "css": {
+            "sys_mandatory": false,
+            "visible": true,
+            "dbType": 12,
+            "label": "CSS",
+            "sys_readonly": false,
+            "type": "css",
+            "mandatory": false,
+            "displayValue": ".header-loader {\n\tfloat: left;\n\twidth: 24px;\n\tposition: relative;\n\ttop: 24px;\n}\n\n.cart-dropdown,\n.wishlist-menu,\n.gtd-dropdown-container .empty-dropdown {\n\twidth: 350px;\n\tpadding: 0;\n\tz-index: 1000;\n\tborder-top-left-radius: 4px !important;\n\tborder-top-right-radius: 4px !important;\n\n\tul {\n\t\tmax-height: 300px;\n\t\toverflow: auto;\n\t}\n\n\t.subtotal {\n\t\tdisplay: block;\n\t}\n\n\t.item-image {\n\t\tpadding: 0;\n\t\tmargin: 0;\n\t\ttext-align: center;\n\t\tmax-width: 100%;\n\t\theight: auto;\n\t}\n\tlabel,\n\tp {\n\t\tpadding: 0;\n\t\tmargin: 0;\n\t}\n\t.media {\n\t\tpadding: 0;\n\t\tmargin: 0;\n\t}\n\t.media-left > a {\n\t\tdisplay: block;\n\t\twidth: 48px;\n\t\tmax-width: 48px;\n\t}\n\t.media-body {\n\t\tlabel {\n\t\t\tfont-weight: bold;\n\t\t}\n\t}\n\tli.media {\n\t\tborder-top: 1px solid #cccccc;\n\t\tpadding: $header-menu-item-padding;\n\t}\n\t.panel {\n\t\tmargin: 0;\n\t}\n\t.panel .panel-body {\n\t\tpadding: 0;\n\t}\n\t.btn-clear {\n\t\tcolor: #333;\n\t\tbackground-color: #fff;\n\t}\n\tp.quantity-price {\n\t\tpadding-top: 0.5rem;\n\t\tspan {\n\t\t\tcolor: $text-muted;\n\t\t\tpadding-right: 0.5rem;\n\t\t\tunicode-bidi: isolate;\n\t\t}\n\t}\n\t.align-right {\n\t\ttext-align: right;\n\t}\n}\n\n.item-added-tooltip,\nwishlist-item-added-tooltip {\n\twidth: 184px;\n\tfont-size: 14px;\n}\n\n.open > .dropdown-menu {\n\tpadding: 0.5rem 0.2rem !important;\n}\n\n.gtd-dropdown-container {\n\t.empty-tour-content {\n\t\ttext-align: center;\n\t\tmargin: 40px 20px;\n\t}\n\t.dropdown-menu li {\n\t\ta {\n\t\t\tcursor: pointer;\n\t\t}\n\t\tmin-width: 20em;\n\t}\n\t.label-as-badge {\n\t\twidth: 12px;\n\t\theight: 12px;\n\t\tdisplay: inline-block;\n\t\tpadding: 0px;\n\t\tpadding-top: 2px;\n\t}\n\t.badge-container {\n\t\tdisplay: inline-block;\n\t\twidth: 12px;\n\t}\n\t.end-tour-menu {\n\t\twidth: 300px;\n\t\tbackground-color: #fff;\n\t\t.end-tour-body {\n\t\t\tdisplay: flex;\n\t\t\tflex-flow: column;\n\t\t\tmargin: 5px;\n\t\t\trow-gap: 8px;\n\t\t}\n\t\t.end-tour-name {\n\t\t\twhite-space: nowrap;\n\t\t\toverflow: hidden;\n\t\t\ttext-overflow: ellipsis;\n\t\t}\n\t}\n}\n\n@media (max-width: 845px) and (min-width: 768px) {\n\t.header-menu-item ul {\n\t\tright: auto;\n\t\tleft: auto;\n\t}\n}\n@media (max-width: 767px) {\n\t.empty-dropdown,\n\t.end-tour-menu {\n\t\twidth: auto !important;\n\t}\n}\n",
+            "readonly": false,
+            "hint": "",
+            "name": "css",
+            "attributes": {},
+            "choice": 0,
+            "value": ".header-loader {\n\tfloat: left;\n\twidth: 24px;\n\tposition: relative;\n\ttop: 24px;\n}\n\n.cart-dropdown,\n.wishlist-menu,\n.gtd-dropdown-container .empty-dropdown {\n\twidth: 350px;\n\tpadding: 0;\n\tz-index: 1000;\n\tborder-top-left-radius: 4px !important;\n\tborder-top-right-radius: 4px !important;\n\n\tul {\n\t\tmax-height: 300px;\n\t\toverflow: auto;\n\t}\n\n\t.subtotal {\n\t\tdisplay: block;\n\t}\n\n\t.item-image {\n\t\tpadding: 0;\n\t\tmargin: 0;\n\t\ttext-align: center;\n\t\tmax-width: 100%;\n\t\theight: auto;\n\t}\n\tlabel,\n\tp {\n\t\tpadding: 0;\n\t\tmargin: 0;\n\t}\n\t.media {\n\t\tpadding: 0;\n\t\tmargin: 0;\n\t}\n\t.media-left > a {\n\t\tdisplay: block;\n\t\twidth: 48px;\n\t\tmax-width: 48px;\n\t}\n\t.media-body {\n\t\tlabel {\n\t\t\tfont-weight: bold;\n\t\t}\n\t}\n\tli.media {\n\t\tborder-top: 1px solid #cccccc;\n\t\tpadding: $header-menu-item-padding;\n\t}\n\t.panel {\n\t\tmargin: 0;\n\t}\n\t.panel .panel-body {\n\t\tpadding: 0;\n\t}\n\t.btn-clear {\n\t\tcolor: #333;\n\t\tbackground-color: #fff;\n\t}\n\tp.quantity-price {\n\t\tpadding-top: 0.5rem;\n\t\tspan {\n\t\t\tcolor: $text-muted;\n\t\t\tpadding-right: 0.5rem;\n\t\t\tunicode-bidi: isolate;\n\t\t}\n\t}\n\t.align-right {\n\t\ttext-align: right;\n\t}\n}\n\n.item-added-tooltip,\nwishlist-item-added-tooltip {\n\twidth: 184px;\n\tfont-size: 14px;\n}\n\n.open > .dropdown-menu {\n\tpadding: 0.5rem 0.2rem !important;\n}\n\n.gtd-dropdown-container {\n\t.empty-tour-content {\n\t\ttext-align: center;\n\t\tmargin: 40px 20px;\n\t}\n\t.dropdown-menu li {\n\t\ta {\n\t\t\tcursor: pointer;\n\t\t}\n\t\tmin-width: 20em;\n\t}\n\t.label-as-badge {\n\t\twidth: 12px;\n\t\theight: 12px;\n\t\tdisplay: inline-block;\n\t\tpadding: 0px;\n\t\tpadding-top: 2px;\n\t}\n\t.badge-container {\n\t\tdisplay: inline-block;\n\t\twidth: 12px;\n\t}\n\t.end-tour-menu {\n\t\twidth: 300px;\n\t\tbackground-color: #fff;\n\t\t.end-tour-body {\n\t\t\tdisplay: flex;\n\t\t\tflex-flow: column;\n\t\t\tmargin: 5px;\n\t\t\trow-gap: 8px;\n\t\t}\n\t\t.end-tour-name {\n\t\t\twhite-space: nowrap;\n\t\t\toverflow: hidden;\n\t\t\ttext-overflow: ellipsis;\n\t\t}\n\t}\n}\n\n@media (max-width: 845px) and (min-width: 768px) {\n\t.header-menu-item ul {\n\t\tright: auto;\n\t\tleft: auto;\n\t}\n}\n@media (max-width: 767px) {\n\t.empty-dropdown,\n\t.end-tour-menu {\n\t\twidth: auto !important;\n\t}\n}\n",
+            "max_length": 8000,
+            "ed": {
+                "name": "css"
+            }
+        },
+        "roles": {
+            "sys_mandatory": false,
+            "visible": true,
+            "dbType": 12,
+            "label": "Roles",
+            "sys_readonly": false,
+            "type": "user_roles",
+            "mandatory": false,
+            "displayValue": "",
+            "readonly": false,
+            "hint": "",
+            "name": "roles",
+            "attributes": {
+                "no_truncate": "true",
+                "update_exempt": "true",
+                "record_watcher_blacklist": "true"
+            },
+            "choice": 0,
+            "value": "",
+            "max_length": 255,
+            "ed": {
+                "name": "roles"
+            }
+        },
+        "link": {
+            "sys_mandatory": false,
+            "visible": true,
+            "dbType": 12,
+            "label": "Link",
+            "sys_readonly": false,
+            "type": "script",
+            "mandatory": false,
+            "displayValue": "function link(scope, elem) {\n\tfunction isMDScreenSize() {\n\t\treturn window.matchMedia('(max-width: 992px)').matches;\n\t}\n\n\tvar KEY = {\n\t\tTAB: 9,\n\t\tENTER: 13,\n\t\tESC: 27,\n\t\tSPACE_BAR: 32,\n\t\tLEFT: 37,\n\t\tUP: 38,\n\t\tRIGHT: 39,\n\t\tDOWN: 40,\n\t};\n\n\t$('.navbar').on('keydown', '[id=\"sp-nav-bar\"]:visible', function (e) {\n\t\tvar mdScreenSize = isMDScreenSize();\n\t\tvar target = e.target;\n\t\tif (target.localName == 'a') {\n\t\t\tvar currentMenuItem = $(target).parents('li').first();\n\t\t\tvar parentUL = currentMenuItem.parents('ul').first();\n\n\t\t\tvar menuItem = currentMenuItem;\n\t\t\tvar targetInSubmenu = !currentMenuItem.is('.header-menu-item');\n\t\t\tif (targetInSubmenu) {\n\t\t\t\tmenuItem = $(target).parents('li.header-menu-item').first();\n\t\t\t}\n\n\t\t\tif (mdScreenSize && e.keyCode == KEY.RIGHT) {\n\t\t\t\tif ($(target).is('.dropdown-toggle') || $(target).is('[data-toggle=\"dropdown\"]')) {\n\t\t\t\t\t// Target is a main menu item with sub-menu\n\t\t\t\t\te.preventDefault();\n\t\t\t\t\te.stopPropagation();\n\t\t\t\t\tcurrentMenuItem.addClass('open');\n\t\t\t\t\t$('> a:visible', menuItem).attr('aria-expanded', 'true');\n\t\t\t\t\tcurrentMenuItem.find('.dropdown-menu a:visible').first().focus();\n\t\t\t\t}\n\t\t\t} else if (mdScreenSize && e.keyCode == KEY.LEFT) {\n\t\t\t\tif (parentUL.is('.dropdown-menu')) {\n\t\t\t\t\t// Target is a sub-menu item\n\t\t\t\t\tparentUL\n\t\t\t\t\t\t.parents('.header-menu-item')\n\t\t\t\t\t\t.first()\n\t\t\t\t\t\t.removeClass('open')\n\t\t\t\t\t\t.find('> a:visible')\n\t\t\t\t\t\t.first()\n\t\t\t\t\t\t.focus();\n\t\t\t\t\tsetAriaExpandedFalse(menuItem);\n\t\t\t\t}\n\t\t\t} else if (\n\t\t\t\t(mdScreenSize && e.keyCode == KEY.UP) ||\n\t\t\t\t(!mdScreenSize && e.keyCode == KEY.LEFT)\n\t\t\t) {\n\t\t\t\thandleFocus(false, e, mdScreenSize, menuItem, currentMenuItem, parentUL, targetInSubmenu);\n\t\t\t} else if (\n\t\t\t\t(mdScreenSize && e.keyCode == KEY.DOWN) ||\n\t\t\t\t(!mdScreenSize && e.keyCode == KEY.RIGHT)\n\t\t\t) {\n\t\t\t\thandleFocus(true, e, mdScreenSize, menuItem, currentMenuItem, parentUL, targetInSubmenu);\n\t\t\t}\n\t\t\tif (e.keyCode == KEY.TAB) {\n\t\t\t\tif ($(target).parents('li').hasClass('open')) $(target).dropdown('toggle');\n\t\t\t\tsetAriaExpandedFalse(menuItem);\n\t\t\t}\n\t\t}\n\t});\n\n\tfunction setAriaExpandedFalse(menuItem) {\n\t\tif (menuItem.is('.dropdown')) $('> a:visible', menuItem).attr('aria-expanded', 'false');\n\t}\n\n\tfunction handleFocus(\n\t\tnext,\n\t\tevent,\n\t\tmdScreenSize,\n\t\tmenuItem,\n\t\tcurrentMenuItem,\n\t\tparentUL,\n\t\ttargetInSubmenu\n\t) {\n\t\tevent.preventDefault();\n\n\t\tif (targetInSubmenu) {\n\t\t\tvar itemsInSubmenu = parentUL.find('li.visible');\n\t\t\tvar firstSubmenuItem = itemsInSubmenu.first();\n\t\t\tvar lastSubmenuItem = itemsInSubmenu.last();\n\t\t}\n\t\tvar allMenuItems = $('li.header-menu-item:visible', '.navbar');\n\t\tvar firstMenuItem = allMenuItems.first();\n\t\tvar lastMenuItem = allMenuItems.last();\n\n\t\tif (!mdScreenSize) {\n\t\t\tcurrentMenuItem.removeClass('open');\n\t\t\tsetAriaExpandedFalse(menuItem);\n\n\t\t\tif (targetInSubmenu) menuItem.removeClass('open');\n\t\t} else {\n\t\t\tevent.stopPropagation();\n\t\t\tif (!targetInSubmenu) {\n\t\t\t\tmenuItem.removeClass('open');\n\t\t\t\tsetAriaExpandedFalse(menuItem);\n\t\t\t}\n\t\t}\n\n\t\tvar indexMenuItem = allMenuItems.index(menuItem);\n\t\tvar targetMenuItem = next\n\t\t\t? allMenuItems.eq(indexMenuItem + 1)\n\t\t\t: allMenuItems.eq(indexMenuItem - 1);\n\t\tvar menuItemToFocus = targetMenuItem.length\n\t\t\t? targetMenuItem\n\t\t\t: next\n\t\t\t? firstMenuItem\n\t\t\t: lastMenuItem; //enable circular navigation\n\n\t\tif (mdScreenSize && targetInSubmenu) {\n\t\t\ttargetMenuItem = next\n\t\t\t\t? currentMenuItem.nextAll('li:visible').first()\n\t\t\t\t: currentMenuItem.prevAll('li:visible').first();\n\t\t\tmenuItemToFocus = targetMenuItem.length\n\t\t\t\t? targetMenuItem\n\t\t\t\t: next\n\t\t\t\t? firstSubmenuItem\n\t\t\t\t: lastSubmenuItem; //enable circular navigation\n\t\t}\n\t\tmenuItemToFocus.find('a').focus();\n\t}\n\n\t$(elem).on('click', '[data-toggle=\"dropdown\"]', function (e) {\n\t\tvar $target = $(e.target);\n\t\tsetTimeout(function () {\n\t\t\t$('.dropdown-menu a:visible', $target.parents('.header-menu-item')).first().focus();\n\t\t}, 0);\n\t});\n\n\tsetTimeout(function () {\n\t\t$('[data-toggle-second=\"tooltip\"]').tooltip();\n\t\tbsDropdownTooltipShim('#cart-dropdown', '#cart-dropdown-wrapper');\n\t\tbsDropdownTooltipShim('#wishlist-menu', '#wishlist-menu-wrapper');\n\t});\n\n\tfunction bsDropdownTooltipShim(tooltipTrigger, dropdownParent) {\n\t\tif ($(dropdownParent).length) {\n\t\t\t$(tooltipTrigger).tooltip();\n\t\t\t$(dropdownParent).on('shown.bs.dropdown', function () {\n\t\t\t\t$(tooltipTrigger).tooltip('disable');\n\t\t\t\t$(tooltipTrigger).tooltip('hide');\n\t\t\t});\n\t\t\t$(dropdownParent).on('hidden.bs.dropdown', function () {\n\t\t\t\t$(tooltipTrigger).tooltip('enable');\n\t\t\t});\n\t\t}\n\t}\n}\n",
+            "readonly": false,
+            "hint": "",
+            "name": "link",
+            "attributes": {
+                "client_script": "true"
+            },
+            "choice": 0,
+            "value": "function link(scope, elem) {\n\tfunction isMDScreenSize() {\n\t\treturn window.matchMedia('(max-width: 992px)').matches;\n\t}\n\n\tvar KEY = {\n\t\tTAB: 9,\n\t\tENTER: 13,\n\t\tESC: 27,\n\t\tSPACE_BAR: 32,\n\t\tLEFT: 37,\n\t\tUP: 38,\n\t\tRIGHT: 39,\n\t\tDOWN: 40,\n\t};\n\n\t$('.navbar').on('keydown', '[id=\"sp-nav-bar\"]:visible', function (e) {\n\t\tvar mdScreenSize = isMDScreenSize();\n\t\tvar target = e.target;\n\t\tif (target.localName == 'a') {\n\t\t\tvar currentMenuItem = $(target).parents('li').first();\n\t\t\tvar parentUL = currentMenuItem.parents('ul').first();\n\n\t\t\tvar menuItem = currentMenuItem;\n\t\t\tvar targetInSubmenu = !currentMenuItem.is('.header-menu-item');\n\t\t\tif (targetInSubmenu) {\n\t\t\t\tmenuItem = $(target).parents('li.header-menu-item').first();\n\t\t\t}\n\n\t\t\tif (mdScreenSize && e.keyCode == KEY.RIGHT) {\n\t\t\t\tif ($(target).is('.dropdown-toggle') || $(target).is('[data-toggle=\"dropdown\"]')) {\n\t\t\t\t\t// Target is a main menu item with sub-menu\n\t\t\t\t\te.preventDefault();\n\t\t\t\t\te.stopPropagation();\n\t\t\t\t\tcurrentMenuItem.addClass('open');\n\t\t\t\t\t$('> a:visible', menuItem).attr('aria-expanded', 'true');\n\t\t\t\t\tcurrentMenuItem.find('.dropdown-menu a:visible').first().focus();\n\t\t\t\t}\n\t\t\t} else if (mdScreenSize && e.keyCode == KEY.LEFT) {\n\t\t\t\tif (parentUL.is('.dropdown-menu')) {\n\t\t\t\t\t// Target is a sub-menu item\n\t\t\t\t\tparentUL\n\t\t\t\t\t\t.parents('.header-menu-item')\n\t\t\t\t\t\t.first()\n\t\t\t\t\t\t.removeClass('open')\n\t\t\t\t\t\t.find('> a:visible')\n\t\t\t\t\t\t.first()\n\t\t\t\t\t\t.focus();\n\t\t\t\t\tsetAriaExpandedFalse(menuItem);\n\t\t\t\t}\n\t\t\t} else if (\n\t\t\t\t(mdScreenSize && e.keyCode == KEY.UP) ||\n\t\t\t\t(!mdScreenSize && e.keyCode == KEY.LEFT)\n\t\t\t) {\n\t\t\t\thandleFocus(false, e, mdScreenSize, menuItem, currentMenuItem, parentUL, targetInSubmenu);\n\t\t\t} else if (\n\t\t\t\t(mdScreenSize && e.keyCode == KEY.DOWN) ||\n\t\t\t\t(!mdScreenSize && e.keyCode == KEY.RIGHT)\n\t\t\t) {\n\t\t\t\thandleFocus(true, e, mdScreenSize, menuItem, currentMenuItem, parentUL, targetInSubmenu);\n\t\t\t}\n\t\t\tif (e.keyCode == KEY.TAB) {\n\t\t\t\tif ($(target).parents('li').hasClass('open')) $(target).dropdown('toggle');\n\t\t\t\tsetAriaExpandedFalse(menuItem);\n\t\t\t}\n\t\t}\n\t});\n\n\tfunction setAriaExpandedFalse(menuItem) {\n\t\tif (menuItem.is('.dropdown')) $('> a:visible', menuItem).attr('aria-expanded', 'false');\n\t}\n\n\tfunction handleFocus(\n\t\tnext,\n\t\tevent,\n\t\tmdScreenSize,\n\t\tmenuItem,\n\t\tcurrentMenuItem,\n\t\tparentUL,\n\t\ttargetInSubmenu\n\t) {\n\t\tevent.preventDefault();\n\n\t\tif (targetInSubmenu) {\n\t\t\tvar itemsInSubmenu = parentUL.find('li.visible');\n\t\t\tvar firstSubmenuItem = itemsInSubmenu.first();\n\t\t\tvar lastSubmenuItem = itemsInSubmenu.last();\n\t\t}\n\t\tvar allMenuItems = $('li.header-menu-item:visible', '.navbar');\n\t\tvar firstMenuItem = allMenuItems.first();\n\t\tvar lastMenuItem = allMenuItems.last();\n\n\t\tif (!mdScreenSize) {\n\t\t\tcurrentMenuItem.removeClass('open');\n\t\t\tsetAriaExpandedFalse(menuItem);\n\n\t\t\tif (targetInSubmenu) menuItem.removeClass('open');\n\t\t} else {\n\t\t\tevent.stopPropagation();\n\t\t\tif (!targetInSubmenu) {\n\t\t\t\tmenuItem.removeClass('open');\n\t\t\t\tsetAriaExpandedFalse(menuItem);\n\t\t\t}\n\t\t}\n\n\t\tvar indexMenuItem = allMenuItems.index(menuItem);\n\t\tvar targetMenuItem = next\n\t\t\t? allMenuItems.eq(indexMenuItem + 1)\n\t\t\t: allMenuItems.eq(indexMenuItem - 1);\n\t\tvar menuItemToFocus = targetMenuItem.length\n\t\t\t? targetMenuItem\n\t\t\t: next\n\t\t\t? firstMenuItem\n\t\t\t: lastMenuItem; //enable circular navigation\n\n\t\tif (mdScreenSize && targetInSubmenu) {\n\t\t\ttargetMenuItem = next\n\t\t\t\t? currentMenuItem.nextAll('li:visible').first()\n\t\t\t\t: currentMenuItem.prevAll('li:visible').first();\n\t\t\tmenuItemToFocus = targetMenuItem.length\n\t\t\t\t? targetMenuItem\n\t\t\t\t: next\n\t\t\t\t? firstSubmenuItem\n\t\t\t\t: lastSubmenuItem; //enable circular navigation\n\t\t}\n\t\tmenuItemToFocus.find('a').focus();\n\t}\n\n\t$(elem).on('click', '[data-toggle=\"dropdown\"]', function (e) {\n\t\tvar $target = $(e.target);\n\t\tsetTimeout(function () {\n\t\t\t$('.dropdown-menu a:visible', $target.parents('.header-menu-item')).first().focus();\n\t\t}, 0);\n\t});\n\n\tsetTimeout(function () {\n\t\t$('[data-toggle-second=\"tooltip\"]').tooltip();\n\t\tbsDropdownTooltipShim('#cart-dropdown', '#cart-dropdown-wrapper');\n\t\tbsDropdownTooltipShim('#wishlist-menu', '#wishlist-menu-wrapper');\n\t});\n\n\tfunction bsDropdownTooltipShim(tooltipTrigger, dropdownParent) {\n\t\tif ($(dropdownParent).length) {\n\t\t\t$(tooltipTrigger).tooltip();\n\t\t\t$(dropdownParent).on('shown.bs.dropdown', function () {\n\t\t\t\t$(tooltipTrigger).tooltip('disable');\n\t\t\t\t$(tooltipTrigger).tooltip('hide');\n\t\t\t});\n\t\t\t$(dropdownParent).on('hidden.bs.dropdown', function () {\n\t\t\t\t$(tooltipTrigger).tooltip('enable');\n\t\t\t});\n\t\t}\n\t}\n}\n",
+            "max_length": 65000,
+            "ed": {
+                "name": "link"
+            }
+        },
+        "description": {
+            "sys_mandatory": false,
+            "visible": true,
+            "dbType": 12,
+            "label": "Description",
+            "sys_readonly": false,
+            "type": "string",
+            "mandatory": false,
+            "displayValue": "",
+            "readonly": false,
+            "hint": "Defines what the widget does",
+            "name": "description",
+            "attributes": {
+                "edge_encryption_enabled": "true"
+            },
+            "choice": 0,
+            "value": "",
+            "max_length": 300,
+            "ed": {
+                "name": "description"
+            }
+        },
+        "demo_data": {
+            "sys_mandatory": false,
+            "visible": true,
+            "dbType": 12,
+            "label": "Demo data",
+            "sys_readonly": false,
+            "type": "json",
+            "mandatory": false,
+            "displayValue": "",
+            "readonly": false,
+            "hint": "",
+            "name": "demo_data",
+            "attributes": {},
+            "choice": 0,
+            "value": "",
+            "max_length": 8000,
+            "ed": {
+                "name": "demo_data"
+            }
+        },
+        "option_schema": {
+            "sys_mandatory": false,
+            "visible": true,
+            "dbType": 12,
+            "label": "Option schema",
+            "sys_readonly": false,
+            "type": "json",
+            "mandatory": false,
+            "displayValue": "",
+            "readonly": false,
+            "hint": "",
+            "name": "option_schema",
+            "attributes": {},
+            "choice": 0,
+            "value": "",
+            "max_length": 8000,
+            "ed": {
+                "name": "option_schema"
+            }
+        },
+        "script": {
+            "sys_mandatory": false,
+            "visible": true,
+            "dbType": 12,
+            "label": "Server script",
+            "sys_readonly": false,
+            "type": "script",
+            "mandatory": false,
+            "displayValue": "(function () {\n\t// build menus\n\tvar menu_id = $sp.getValue('sys_id'); // instance sys_id\n\tdata.menu = {};\n\tdata.menu.items = $sp.getMenuItems(menu_id);\n\tdata.isLoggedIn = GlideSession.get().isLoggedIn();\n\tdata.guidedTours = {};\n\t// Show tours only if gtd's sp sys property is set\n\tdata.showTours = gs.getProperty('com.snc.guided_tours.sp.enable') === 'true' && data.isLoggedIn;\n\tif (!data.showTours) {\n\t\tdata.guidedTours = null;\n\t}\n\tvar catalogArr = ($sp.getCatalogs().value + '').split(',');\n\n\tcatalogArr.forEach(function (catalog) {\n\t\tdata.showWishlist = data.showWishlist || new sn_sc.Catalog(catalog).isWishlistEnabled();\n\t});\n\tif (data.isLoggedIn) {\n\t\tif (options.enable_wishlist && data.showWishlist)\n\t\t\tdata.wishlistWidget = $sp.getWidget('sc_draft_list_cart', {\n\t\t\t\twishlistTemplate: 'small_draft.html',\n\t\t\t\tauto_update_wishlist: options.auto_update_wishlist,\n\t\t\t});\n\t\tif (options.enable_cart) {\n\t\t\tif (gs.getProperty('glide.sc.portal.use_cart_v2_header', 'false') === 'true')\n\t\t\t\tdata.cartWidget = $sp.getWidget('sc-shopping-cart-v2', {\n\t\t\t\t\tcartTemplate: 'small_shopping_cart_v2.html',\n\t\t\t\t\tauto_update_cart: options.auto_update_cart,\n\t\t\t\t});\n\t\t\telse\n\t\t\t\tdata.cartWidget = $sp.getWidget('sc-shopping-cart', {\n\t\t\t\t\tcartTemplate: 'small_shopping_cart.html',\n\t\t\t\t\tauto_update_cart: options.auto_update_cart,\n\t\t\t\t});\n\t\t}\n\t}\n\n\tdata.wishlist_count = new sn_sc.CartJS().getWishlistCount();\n})();\n",
+            "readonly": false,
+            "hint": "",
+            "name": "script",
+            "attributes": {},
+            "choice": 0,
+            "value": "(function () {\n\t// build menus\n\tvar menu_id = $sp.getValue('sys_id'); // instance sys_id\n\tdata.menu = {};\n\tdata.menu.items = $sp.getMenuItems(menu_id);\n\tdata.isLoggedIn = GlideSession.get().isLoggedIn();\n\tdata.guidedTours = {};\n\t// Show tours only if gtd's sp sys property is set\n\tdata.showTours = gs.getProperty('com.snc.guided_tours.sp.enable') === 'true' && data.isLoggedIn;\n\tif (!data.showTours) {\n\t\tdata.guidedTours = null;\n\t}\n\tvar catalogArr = ($sp.getCatalogs().value + '').split(',');\n\n\tcatalogArr.forEach(function (catalog) {\n\t\tdata.showWishlist = data.showWishlist || new sn_sc.Catalog(catalog).isWishlistEnabled();\n\t});\n\tif (data.isLoggedIn) {\n\t\tif (options.enable_wishlist && data.showWishlist)\n\t\t\tdata.wishlistWidget = $sp.getWidget('sc_draft_list_cart', {\n\t\t\t\twishlistTemplate: 'small_draft.html',\n\t\t\t\tauto_update_wishlist: options.auto_update_wishlist,\n\t\t\t});\n\t\tif (options.enable_cart) {\n\t\t\tif (gs.getProperty('glide.sc.portal.use_cart_v2_header', 'false') === 'true')\n\t\t\t\tdata.cartWidget = $sp.getWidget('sc-shopping-cart-v2', {\n\t\t\t\t\tcartTemplate: 'small_shopping_cart_v2.html',\n\t\t\t\t\tauto_update_cart: options.auto_update_cart,\n\t\t\t\t});\n\t\t\telse\n\t\t\t\tdata.cartWidget = $sp.getWidget('sc-shopping-cart', {\n\t\t\t\t\tcartTemplate: 'small_shopping_cart.html',\n\t\t\t\t\tauto_update_cart: options.auto_update_cart,\n\t\t\t\t});\n\t\t}\n\t}\n\n\tdata.wishlist_count = new sn_sc.CartJS().getWishlistCount();\n})();\n",
+            "max_length": 65000,
+            "ed": {
+                "name": "script"
+            }
+        },
+        "has_preview": {
+            "sys_mandatory": false,
+            "visible": true,
+            "dbType": -7,
+            "label": "Has preview",
+            "sys_readonly": false,
+            "type": "boolean",
+            "mandatory": false,
+            "displayValue": "false",
+            "readonly": false,
+            "hint": "Defines whether preview data is available",
+            "name": "has_preview",
+            "attributes": {},
+            "choice": 0,
+            "value": "false",
+            "max_length": 40,
+            "ed": {
+                "name": "has_preview"
+            }
+        },
+        "public": {
+            "sys_mandatory": false,
+            "visible": true,
+            "dbType": -7,
+            "label": "Public",
+            "sys_readonly": false,
+            "type": "boolean",
+            "mandatory": false,
+            "displayValue": "true",
+            "readonly": false,
+            "hint": "Widget publicly available to unauthenticated users",
+            "name": "public",
+            "attributes": {
+                "update_exempt": "true"
+            },
+            "choice": 0,
+            "value": "true",
+            "max_length": 40,
+            "ed": {
+                "name": "public"
+            }
+        },
+        "docs": {
+            "sys_mandatory": false,
+            "visible": true,
+            "table_attributes": {
+                "update_synch": "true",
+                "synch_attachments": "true"
+            },
+            "dbType": 12,
+            "label": "Docs",
+            "sys_readonly": false,
+            "type": "reference",
+            "mandatory": false,
+            "refTable": "sp_documentation",
+            "reference_type": "table",
+            "displayValue": "",
+            "readonly": false,
+            "hint": "",
+            "name": "docs",
+            "attributes": {
+                "encode_utf8": "false"
+            },
+            "reference_key": "sys_id",
+            "readonlyClickthrough": false,
+            "choice": 0,
+            "value": "",
+            "max_length": 32,
+            "ed": {
+                "reference": "sp_documentation",
+                "searchField": "title",
+                "defaultOperator": "STARTSWITH",
+                "name": "docs"
+            }
+        },
+        "client_script": {
+            "sys_mandatory": false,
+            "visible": true,
+            "dbType": 12,
+            "label": "Client controller",
+            "sys_readonly": false,
+            "type": "script",
+            "mandatory": false,
+            "displayValue": "api.controller = function ($scope, spUtil, $rootScope, $timeout, spAriaUtil, spGtd, $window, i18n) {\n\tvar KEY_ENTER = 13;\n\t$scope.collapse = function () {\n\t\t$rootScope.$emit('sp-navbar-collapse');\n\t};\n\t$scope.loadingIndicator = $rootScope.loadingIndicator;\n\t$scope.cartItemCount = 0;\n\t$scope.wishlistItemCount = 0;\n\t$scope.toursTooltipEnabled = true;\n\t$scope.currentTour = spGtd.getCurrentTour();\n\t$scope.accessibilityEnabled = spAriaUtil.g_accessibility === 'true';\n\t$scope.isMobile = spUtil.isMobile();\n\tvar isCartCountSetAtleastOnce = false;\n\tvar cancelTooltipPromise;\n\t$scope.$on('$sp.service_catalog.cart.count', function ($evt, count) {\n\t\tvar previousCount = $scope.cartItemCount;\n\t\t$scope.cartItemCount = count;\n\t\tif (previousCount >= $scope.cartItemCount) return;\n\t\tif (!isCartCountSetAtleastOnce) {\n\t\t\tisCartCountSetAtleastOnce = true;\n\t\t\treturn;\n\t\t}\n\t\t$timeout.cancel(cancelTooltipPromise);\n\t\t$timeout(function () {\n\t\t\tsetCartTooltipVisibility(true);\n\t\t});\n\t\tcancelTooltipPromise = $timeout(function () {\n\t\t\tsetCartTooltipVisibility(false);\n\t\t}, 3000);\n\t});\n\t$scope.$on('$sp.service_catalog.wishlist.count', function ($evt, count) {\n\t\t// console.log('wishlist count', count);\n\t\t$scope.wishlistItemCount = count;\n\t});\n\t$scope.$on('sp_loading_indicator', function (e, value) {\n\t\t$scope.loadingIndicator = value;\n\t});\n\tfunction setCartTooltipVisibility(value) {\n\t\t$('#cart-dropdown').tooltip(value ? 'show' : 'hide');\n\t}\n\t$scope.toggleTours = function () {\n\t\tvar action = $scope.toursTooltipEnabled ? 'disable' : 'enable';\n\t\t$scope.toursTooltipEnabled = $scope.toursTooltipEnabled ? false : true;\n\t\t$('[data-toggle-second=\"tooltip\"]').tooltip(action);\n\t\tif (action == 'disable') $('[data-toggle-second=\"tooltip\"]').tooltip('hide');\n\t\t$scope.currentTour = spGtd.getCurrentTour();\n\t};\n\t$scope.endTour = function () {\n\t\tspGtd.endTour();\n\t};\n\t$scope.endTourByKeyDown = function (e) {\n\t\tif (e.which === KEY_ENTER) {\n\t\t\tspGtd.endTour();\n\t\t}\n\t};\n\t$scope.onToursItemBlur = function () {\n\t\t$('[data-toggle-second=\"tooltip\"]').tooltip('enable');\n\t\t$scope.toursTooltipEnabled = true;\n\t};\n\t// PRB1108244: visibleItems array is used to improve keyboard nav\n\t// in menu, refresh it as needed\n\t$scope.$watch(\n\t\t'data.menu.items',\n\t\tfunction () {\n\t\t\t$scope.visibleItems = [];\n\t\t\tif ($scope.data.menu.items) {\n\t\t\t\tfor (var i in $scope.data.menu.items) {\n\t\t\t\t\tvar item = $scope.data.menu.items[i];\n\t\t\t\t\tif (item.items || (item.scriptedItems && item.scriptedItems.count != 0))\n\t\t\t\t\t\t$scope.visibleItems.push(item);\n\t\t\t\t}\n\t\t\t}\n\t\t},\n\t\ttrue,\n\t);\n\t$scope.$on('sp-tour-ended', function () {\n\t\t$timeout(function () {\n\t\t\t$scope.currentTour = null;\n\t\t});\n\t\t$timeout(function () {\n\t\t\t$('.dropdown-menu a:visible', $('.gtd-dropdown-container')).first().focus();\n\t\t}, 5);\n\t});\n\t$scope.$on('sp-menu-update-tours', function (event, tours) {\n\t\t$scope.data.showTours = $scope.data.showTours && !spUtil.isMobile();\n\t\tif ($scope.data.showTours === false) {\n\t\t\t$scope.data.guidedTours = null;\n\t\t\treturn;\n\t\t}\n\t\tvar guidedToursLabel = 'Guided Tours';\n\t\t$scope.data.guidedTours = {\n\t\t\tlabel: guidedToursLabel,\n\t\t\tcollection: [],\n\t\t};\n\t\t$scope.tooltipTours =\n\t\t\ttours.length === 1\n\t\t\t\t? i18n.getMessage('This page currently has 1 tour')\n\t\t\t\t: i18n.getMessage('This page currently has {0} tours').withValues([tours.length]);\n\t\tif (tours.length > 0) {\n\t\t\t$scope.data.guidedTours.collection = tours.map(function (t) {\n\t\t\t\treturn {\n\t\t\t\t\ttitle: t.name,\n\t\t\t\t\tid: t.id,\n\t\t\t\t\tclicked: function () {\n\t\t\t\t\t\tspGtd.launch(t.id);\n\t\t\t\t\t},\n\t\t\t\t};\n\t\t\t});\n\t\t}\n\t});\n\t// Get list of record watchers\n\tvar record_watchers = [];\n\tif ($scope.data.menu.items) {\n\t\tfor (var i in $scope.data.menu.items) {\n\t\t\tvar item = $scope.data.menu.items[i];\n\t\t\tif (item.type == 'scripted') {\n\t\t\t\tif (item.scriptedItems.record_watchers)\n\t\t\t\t\trecord_watchers = record_watchers.concat(item.scriptedItems.record_watchers);\n\t\t\t}\n\t\t\tif (item.type == 'filtered') {\n\t\t\t\trecord_watchers.push({ table: item.table, filter: item.filter });\n\t\t\t}\n\t\t}\n\t}\n\t// Init record watchers\n\tfor (var y in record_watchers) {\n\t\tvar watcher = record_watchers[y];\n\t\tspUtil.recordWatch($scope, watcher.table, watcher.filter);\n\t}\n\t$rootScope.$broadcast('sp-header-loaded');\n};\n",
+            "readonly": false,
+            "hint": "",
+            "name": "client_script",
+            "attributes": {
+                "client_script": "true"
+            },
+            "choice": 0,
+            "value": "api.controller = function ($scope, spUtil, $rootScope, $timeout, spAriaUtil, spGtd, $window, i18n) {\n\tvar KEY_ENTER = 13;\n\t$scope.collapse = function () {\n\t\t$rootScope.$emit('sp-navbar-collapse');\n\t};\n\t$scope.loadingIndicator = $rootScope.loadingIndicator;\n\t$scope.cartItemCount = 0;\n\t$scope.wishlistItemCount = 0;\n\t$scope.toursTooltipEnabled = true;\n\t$scope.currentTour = spGtd.getCurrentTour();\n\t$scope.accessibilityEnabled = spAriaUtil.g_accessibility === 'true';\n\t$scope.isMobile = spUtil.isMobile();\n\tvar isCartCountSetAtleastOnce = false;\n\tvar cancelTooltipPromise;\n\t$scope.$on('$sp.service_catalog.cart.count', function ($evt, count) {\n\t\tvar previousCount = $scope.cartItemCount;\n\t\t$scope.cartItemCount = count;\n\t\tif (previousCount >= $scope.cartItemCount) return;\n\t\tif (!isCartCountSetAtleastOnce) {\n\t\t\tisCartCountSetAtleastOnce = true;\n\t\t\treturn;\n\t\t}\n\t\t$timeout.cancel(cancelTooltipPromise);\n\t\t$timeout(function () {\n\t\t\tsetCartTooltipVisibility(true);\n\t\t});\n\t\tcancelTooltipPromise = $timeout(function () {\n\t\t\tsetCartTooltipVisibility(false);\n\t\t}, 3000);\n\t});\n\t$scope.$on('$sp.service_catalog.wishlist.count', function ($evt, count) {\n\t\t// console.log('wishlist count', count);\n\t\t$scope.wishlistItemCount = count;\n\t});\n\t$scope.$on('sp_loading_indicator', function (e, value) {\n\t\t$scope.loadingIndicator = value;\n\t});\n\tfunction setCartTooltipVisibility(value) {\n\t\t$('#cart-dropdown').tooltip(value ? 'show' : 'hide');\n\t}\n\t$scope.toggleTours = function () {\n\t\tvar action = $scope.toursTooltipEnabled ? 'disable' : 'enable';\n\t\t$scope.toursTooltipEnabled = $scope.toursTooltipEnabled ? false : true;\n\t\t$('[data-toggle-second=\"tooltip\"]').tooltip(action);\n\t\tif (action == 'disable') $('[data-toggle-second=\"tooltip\"]').tooltip('hide');\n\t\t$scope.currentTour = spGtd.getCurrentTour();\n\t};\n\t$scope.endTour = function () {\n\t\tspGtd.endTour();\n\t};\n\t$scope.endTourByKeyDown = function (e) {\n\t\tif (e.which === KEY_ENTER) {\n\t\t\tspGtd.endTour();\n\t\t}\n\t};\n\t$scope.onToursItemBlur = function () {\n\t\t$('[data-toggle-second=\"tooltip\"]').tooltip('enable');\n\t\t$scope.toursTooltipEnabled = true;\n\t};\n\t// PRB1108244: visibleItems array is used to improve keyboard nav\n\t// in menu, refresh it as needed\n\t$scope.$watch(\n\t\t'data.menu.items',\n\t\tfunction () {\n\t\t\t$scope.visibleItems = [];\n\t\t\tif ($scope.data.menu.items) {\n\t\t\t\tfor (var i in $scope.data.menu.items) {\n\t\t\t\t\tvar item = $scope.data.menu.items[i];\n\t\t\t\t\tif (item.items || (item.scriptedItems && item.scriptedItems.count != 0))\n\t\t\t\t\t\t$scope.visibleItems.push(item);\n\t\t\t\t}\n\t\t\t}\n\t\t},\n\t\ttrue,\n\t);\n\t$scope.$on('sp-tour-ended', function () {\n\t\t$timeout(function () {\n\t\t\t$scope.currentTour = null;\n\t\t});\n\t\t$timeout(function () {\n\t\t\t$('.dropdown-menu a:visible', $('.gtd-dropdown-container')).first().focus();\n\t\t}, 5);\n\t});\n\t$scope.$on('sp-menu-update-tours', function (event, tours) {\n\t\t$scope.data.showTours = $scope.data.showTours && !spUtil.isMobile();\n\t\tif ($scope.data.showTours === false) {\n\t\t\t$scope.data.guidedTours = null;\n\t\t\treturn;\n\t\t}\n\t\tvar guidedToursLabel = 'Guided Tours';\n\t\t$scope.data.guidedTours = {\n\t\t\tlabel: guidedToursLabel,\n\t\t\tcollection: [],\n\t\t};\n\t\t$scope.tooltipTours =\n\t\t\ttours.length === 1\n\t\t\t\t? i18n.getMessage('This page currently has 1 tour')\n\t\t\t\t: i18n.getMessage('This page currently has {0} tours').withValues([tours.length]);\n\t\tif (tours.length > 0) {\n\t\t\t$scope.data.guidedTours.collection = tours.map(function (t) {\n\t\t\t\treturn {\n\t\t\t\t\ttitle: t.name,\n\t\t\t\t\tid: t.id,\n\t\t\t\t\tclicked: function () {\n\t\t\t\t\t\tspGtd.launch(t.id);\n\t\t\t\t\t},\n\t\t\t\t};\n\t\t\t});\n\t\t}\n\t});\n\t// Get list of record watchers\n\tvar record_watchers = [];\n\tif ($scope.data.menu.items) {\n\t\tfor (var i in $scope.data.menu.items) {\n\t\t\tvar item = $scope.data.menu.items[i];\n\t\t\tif (item.type == 'scripted') {\n\t\t\t\tif (item.scriptedItems.record_watchers)\n\t\t\t\t\trecord_watchers = record_watchers.concat(item.scriptedItems.record_watchers);\n\t\t\t}\n\t\t\tif (item.type == 'filtered') {\n\t\t\t\trecord_watchers.push({ table: item.table, filter: item.filter });\n\t\t\t}\n\t\t}\n\t}\n\t// Init record watchers\n\tfor (var y in record_watchers) {\n\t\tvar watcher = record_watchers[y];\n\t\tspUtil.recordWatch($scope, watcher.table, watcher.filter);\n\t}\n\t$rootScope.$broadcast('sp-header-loaded');\n};\n",
+            "max_length": 8000,
+            "ed": {
+                "name": "client_script"
+            }
+        },
+        "data_table": {
+            "sys_mandatory": true,
+            "visible": true,
+            "dbType": 12,
+            "default_value": "sp_instance",
+            "label": "Data table",
+            "sys_readonly": false,
+            "type": "table_name",
+            "mandatory": true,
+            "displayValue": "sp_instance_menu",
+            "readonly": false,
+            "hint": "",
+            "name": "data_table",
+            "attributes": {
+                "base_table": "sp_instance",
+                "base_start": "true"
+            },
+            "choice": 0,
+            "choices": [],
+            "value": "sp_instance_menu",
+            "max_length": 80,
+            "ed": {
+                "name": "data_table"
+            }
+        },
+        "name": {
+            "sys_mandatory": true,
+            "visible": true,
+            "dbType": 12,
+            "label": "Name",
+            "sys_readonly": false,
+            "type": "translated_field",
+            "mandatory": true,
+            "displayValue": "ZNC Header Menu",
+            "readonly": false,
+            "hint": "",
+            "name": "name",
+            "attributes": {},
+            "choice": 0,
+            "value": "ZNC Header Menu",
+            "max_length": 40,
+            "ed": {
+                "name": "name"
+            }
+        },
+        "sys_scope": {
+            "sys_mandatory": false,
+            "visible": true,
+            "table_attributes": {
+                "metadata_link_exempt": "true"
+            },
+            "dbType": 12,
+            "label": "Application",
+            "sys_readonly": true,
+            "type": "reference",
+            "mandatory": false,
+            "refTable": "sys_scope",
+            "reference_type": "table",
+            "displayValue": "Global",
+            "readonly": true,
+            "hint": "Application containing this record",
+            "name": "sys_scope",
+            "attributes": {
+                "list_force_default": "true",
+                "readonly_clickthrough": "true",
+                "ignore_filter_on_new": "true"
+            },
+            "reference_key": "sys_id",
+            "readonlyClickthrough": true,
+            "choice": 0,
+            "value": "global",
+            "max_length": 32,
+            "ed": {
+                "reference": "sys_scope",
+                "searchField": "name",
+                "defaultOperator": "STARTSWITH",
+                "name": "sys_scope"
+            }
+        },
+        "id": {
+            "sys_mandatory": false,
+            "visible": true,
+            "dbType": 12,
+            "label": "ID",
+            "sys_readonly": false,
+            "type": "string",
+            "mandatory": false,
+            "displayValue": "",
+            "readonly": false,
+            "hint": "Identifier for $sp.embedWidget()",
+            "name": "id",
+            "attributes": {
+                "edge_encryption_enabled": "true"
+            },
+            "choice": 0,
+            "value": "",
+            "max_length": 40,
+            "ed": {
+                "name": "id"
+            }
+        },
+        "field_list": {
+            "sys_mandatory": false,
+            "visible": true,
+            "dependentField": "data_table",
+            "dbType": 12,
+            "label": "Fields",
+            "sys_readonly": false,
+            "type": "field_list",
+            "mandatory": false,
+            "displayValue": "title",
+            "readonly": false,
+            "hint": "",
+            "name": "field_list",
+            "attributes": {
+                "is_multi_text": "false"
+            },
+            "choice": 0,
+            "value": "title",
+            "max_length": 1000,
+            "ed": {
+                "dependent_value": "sp_instance_menu",
+                "name": "field_list"
+            }
+        },
+        "controller_as": {
+            "sys_mandatory": false,
+            "visible": true,
+            "dbType": 12,
+            "label": "controllerAs",
+            "sys_readonly": false,
+            "type": "string",
+            "mandatory": false,
+            "displayValue": "c",
+            "readonly": false,
+            "hint": "Identifier name for a reference to the controller in the directive's scope",
+            "name": "controller_as",
+            "attributes": {
+                "edge_encryption_enabled": "true"
+            },
+            "choice": 0,
+            "value": "c",
+            "max_length": 100,
+            "ed": {
+                "name": "controller_as"
+            }
+        }
+    }
+}
